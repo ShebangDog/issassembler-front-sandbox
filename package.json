@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "elm-tooling": "^1.10.0"
+  },
+  "scripts": {
+    "test": "npx elm-test-rs",
+    "postinstall": "npx elm-tooling install"
+  },
+  "engines": {
+    "node": "16.16.0"
+  }
+}
