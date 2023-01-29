@@ -42,7 +42,7 @@ update msg model =
 
 view : Model -> Document Msg
 view model =
-    { title = "title"
+    { title = "ShebangDog"
     , body =
         [ div
             []
