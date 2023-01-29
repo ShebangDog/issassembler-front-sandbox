@@ -1,0 +1,25 @@
+name: deploy
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches: 
+     - "main"
+jobs:
+  deploy-to-own-server:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: deploy-elm
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST_IP }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER_NAME }}
+          key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.APP_CODE_PATH }}
+            git pull origin main
+            elm make src/Main.elm
+            yes | cp index.html ${{ secrets.DEPLOY_SOURCE_PATH }}
