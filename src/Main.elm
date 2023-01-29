@@ -35,7 +35,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Message ->
-            ( { model | statusText = "Loaded" }
+            ( { model | statusText = "Success Deployment" }
             , Cmd.none
             )
 
