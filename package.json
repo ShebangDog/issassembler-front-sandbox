@@ -1,6 +1,7 @@
 {
   "devDependencies": {
-    "elm-tooling": "^1.10.0"
+    "elm-tooling": "^1.10.0",
+    "fixpack": "4.0.0",
   },
   "scripts": {
     "test": "npx elm-test-rs",
