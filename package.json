@@ -1,4 +1,7 @@
 {
+  "dependencies": {
+    "puppeteer": "^19.6.3"
+  },
   "devDependencies": {
     "elm-tooling": "^1.10.0",
     "fixpack": "4.0.0",
