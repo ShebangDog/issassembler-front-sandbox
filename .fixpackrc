@@ -3,5 +3,9 @@
         "dependencies"
     ],
     "warn": [
+    ],
+    "sortedSubItems": [
+        "dependencies",
+        "devDependencies"
     ]
 }
