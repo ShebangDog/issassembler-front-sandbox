@@ -67,7 +67,7 @@ jobs:
           node-version: 16.16.0
       - run: |
           npm run dev &
-          npm capture-actual
+          npm run capture-actual
           npm run update-expected
           pkill elm
       - run: |
