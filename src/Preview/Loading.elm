@@ -1,6 +1,6 @@
 module Preview.Loading exposing (..)
 
-import Browser exposing (Document)
+import Browser
 import Html.Styled exposing (Html)
 import Loading
 
