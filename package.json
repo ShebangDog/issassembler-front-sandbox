@@ -17,6 +17,7 @@
     "capture-actual:main": "find src/Preview -type f | xargs -IVAL node script/screenshot.js VAL",
     "update-expected": "reg-cli ./screenshot ./expected ./diff -U",
     "compare": "reg-cli ./screenshot ./expected ./diff -R ./report.html",
+    "dev": "elm reactor",
     "fix": "run-s fix:*",
     "fix:package": "fixpack",
     "test": "npx elm-test-rs",
