@@ -23,8 +23,10 @@ jobs:
         with:
           node-version: 16.16.0
       - run: npm install
-      - run: npm run capture-actual
-      - run: npm run compare
+      - run: npm run dev &
+      - run: npm capture-actual
+      - run: npm run update-expected
+      - run: pkill elm
 
       - name: upload result as artifact
         uses: actions/upload-artifact@v3
