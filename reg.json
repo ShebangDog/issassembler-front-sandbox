@@ -1,0 +1,1 @@
+{"failedItems":[],"newItems":[],"deletedItems":[],"passedItems":["src/Preview/Hoge.elm.png","src/Preview/Loading.elm.png"],"expectedItems":["src/Preview/Hoge.elm.png","src/Preview/Loading.elm.png"],"actualItems":["src/Preview/Hoge.elm.png","src/Preview/Loading.elm.png"],"diffItems":[],"actualDir":"./screenshot","expectedDir":"./expected","diffDir":"./diff"}
