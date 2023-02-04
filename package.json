@@ -8,6 +8,9 @@
     "npm-run-all": "4.1.5",
     "reg-cli": "^0.17.7"
   },
+  "engines": {
+    "node": "16.16.0"
+  },
   "scripts": {
     "capture-actual": "run-s capture-actual:*",
     "capture-actual:prepare-directory": "find src/Preview -type d | xargs -IVAL mkdir -p screenshot/VAL ",
@@ -18,8 +21,5 @@
     "fix:package": "fixpack",
     "test": "npx elm-test-rs",
     "postinstall": "npx elm-tooling install"
-  },
-  "engines": {
-    "node": "16.16.0"
   }
 }
