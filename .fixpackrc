@@ -1,0 +1,11 @@
+{
+    "required": [
+        "dependencies"
+    ],
+    "warn": [
+    ],
+    "sortedSubItems": [
+        "dependencies",
+        "devDependencies"
+    ]
+}
