@@ -1,5 +1,5 @@
 name: code-check
-on: [push]
+on: [pull_request]
 jobs:
   unit-test:
     runs-on: ubuntu-latest
@@ -10,3 +10,42 @@ jobs:
           node-version: 16.16.0
       - run: npm install
       - run: npm run test
+  visual-regression-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.16.0
+      - run: npm install
+      - run: npm run capture-actual
+      - run: npm run compare
+
+      - name: upload result as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-result
+          path: |
+            ./expected/src/Preview/**/*.png
+            ./screenshot/src/Preview/**/*.png
+            ./diff/**/*.png
+            ./report.html
+      - name: make result of vrt
+        run: |
+          cat << EOF >> results
+          ## Visual regression testの結果
+          @$GITHUB_ACTOR
+          EOF
+          node ./script/formatter.js ../reg.json | cat >> results
+          cat << EOF >> results
+          - [ ] 予期しない[差分]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID#Artifacts)がないことを確認しました
+          EOF
+      - name: notify to author
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          gh pr comment -F ./results "${URL}"
+      
