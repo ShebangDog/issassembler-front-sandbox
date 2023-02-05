@@ -17,7 +17,7 @@ view model =
         [ css
             [ Css.width (Css.px 48)
             , Css.height (Css.px 36)
-            , Css.property "background-image" "conic-gradient(blue 140deg, black 140deg, transparent 360deg)"
+            , Css.property "background-image" "conic-gradient(red 140deg, black 140deg, transparent 360deg)"
             , Css.borderRadius (Css.pct 50)
             , Css.position Css.relative
             , Css.property "animation-timing-function" "linear"
