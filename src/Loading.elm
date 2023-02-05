@@ -2,8 +2,8 @@ module Loading exposing (Model, view)
 
 import Css
 import Css.Animations
-import Html.Styled exposing (Html)
-import Html.Styled.Attributes
+import Html.Styled exposing (Html, div)
+import Html.Styled.Attributes exposing (css)
 
 
 type alias Model =
@@ -13,8 +13,8 @@ type alias Model =
 
 view : Model -> Html msg
 view model =
-    Html.Styled.div
-        [ Html.Styled.Attributes.css
+    div
+        [ css
             [ Css.width (Css.px 48)
             , Css.height (Css.px 36)
             , Css.property "background-image" "conic-gradient(blue 140deg, black 140deg, transparent 360deg)"
@@ -26,8 +26,8 @@ view model =
             , Css.animationIterationCount Css.infinite
             ]
         ]
-        [ Html.Styled.div
-            [ Html.Styled.Attributes.css
+        [ div
+            [ css
                 [ Css.position Css.absolute
                 , Css.batch <| List.map (\edge -> edge (Css.pct 10)) [ Css.left, Css.right, Css.top, Css.bottom ]
                 , Css.backgroundColor (Css.hex "000000")
