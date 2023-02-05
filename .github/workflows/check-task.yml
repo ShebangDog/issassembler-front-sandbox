@@ -48,11 +48,8 @@ jobs:
           NUMBER: ${{ github.event.issue.number }}
           COMMENT: ${{ toJson(github.event.comment) }}
           CHANGES: ${{ toJson(github.event.changes) }}
-      - run: |
-          exit 0
-        if: env.finished_task_count == 1 && env.unfinished_task_count == 1 && env.previous_task_count == 1 && env.current_task_count == 1
-      - run: |
-          exit 1
+      - if: ${{ env.finished_task_count != 1 || env.unfinished_task_count != 1 || env.previous_task_count != 1 || env.current_task_count != 1 }}
+        run: exit 1
   update-expected-image:
     name: do update expected image
     needs: pr_commented

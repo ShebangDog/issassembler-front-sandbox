@@ -42,7 +42,7 @@ update msg model =
 
 view : Model -> Document Msg
 view model =
-    { title = "ShebangDog"
+    { title = "Issassembler"
     , body =
         List.map Html.Styled.toUnstyled
             [ div
