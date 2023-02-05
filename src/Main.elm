@@ -1,8 +1,8 @@
 module Main exposing (Model, Msg(..), init, main, subscriptions, update, view)
 
 import Browser exposing (Document)
-import Html exposing (button, div, text)
-import Html.Events exposing (onClick)
+import Html.Styled exposing (button, div, text)
+import Html.Styled.Events exposing (onClick)
 
 
 type Msg
@@ -44,10 +44,11 @@ view : Model -> Document Msg
 view model =
     { title = "ShebangDog"
     , body =
-        [ div
-            []
-            [ button [ onClick Message ] [ text model.statusText ] ]
-        ]
+        List.map Html.Styled.toUnstyled
+            [ div
+                []
+                [ button [ onClick Message ] [ text model.statusText ] ]
+            ]
     }
 
 
