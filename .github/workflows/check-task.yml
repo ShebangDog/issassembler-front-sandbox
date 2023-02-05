@@ -63,6 +63,7 @@ jobs:
         with:
           node-version: 16.16.0
       - run: |
+          npm install
           npm run dev &
           npm run capture-actual
           npm run update-expected
