@@ -20,6 +20,7 @@ init =
     { statusText = "Ready" }
 
 
+main : Program () Model Msg
 main =
     Browser.sandbox
         { init = init
