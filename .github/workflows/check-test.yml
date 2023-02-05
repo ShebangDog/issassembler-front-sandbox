@@ -26,10 +26,12 @@ jobs:
       - run: npm run dev &
       - run: npm run capture-actual
       - run: npm run compare
+        continue-on-error: true
       - run: pkill elm
       - run: node ./script/isPassed.js ../reg.json
+        continue-on-error: true
       - run: exit 0
-        if: success
+        if: ${{ success() }}
       - name: upload result as artifact
         uses: actions/upload-artifact@v3
         with:

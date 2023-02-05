@@ -15,30 +15,24 @@ type alias Model =
     }
 
 
-init : () -> ( Model, Cmd msg )
-init () =
-    ( { statusText = "Ready" }
-    , Cmd.none
-    )
+init : Model
+init =
+    { statusText = "Ready" }
 
 
-main : Program () Model Msg
 main =
-    Browser.element
+    Browser.sandbox
         { init = init
         , view = view >> Html.Styled.toUnstyled
         , update = update
-        , subscriptions = subscriptions
         }
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model -> Model
 update msg model =
     case msg of
         Message ->
-            ( { model | statusText = "Loaded" }
-            , Cmd.none
-            )
+            { model | statusText = "Loaded" }
 
 
 view : Model -> Html msg
