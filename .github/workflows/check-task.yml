@@ -1,0 +1,78 @@
+name: check-task
+on:
+  issue_comment:
+    types: [edited]
+jobs:
+  pr_commented:
+    name: PR comment
+    if: github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo '${{ toJson(github.event.changes) }}' | jq ".body.from" | xargs echo "previous value: " >> message
+          echo '${{ toJson(github.event.comment) }}' | jq ".body" | xargs echo "current value: " >> message
+          cat message
+          
+          echo '${{ toJson(github.event.changes) }}' | 
+          jq ".body.from" |
+          grep -oE "\- \[ \]|\- \[x\]" |
+          wc -l |
+          xargs echo |
+          xargs printf "%s%s\n" "previous_task_count=" |
+          xargs echo >> $GITHUB_ENV
+          
+          echo '${{ toJson(github.event.comment) }}' | 
+          jq ".body" |
+          grep -oE "\- \[ \]|\- \[x\]" |
+          wc -l |
+          xargs echo |
+          xargs printf "%s%s\n" "current_task_count=" |
+          xargs echo >> $GITHUB_ENV
+          
+          echo '${{ toJson(github.event.comment) }}' | 
+          jq ".body" |
+          grep -oE "\- \[x\]" |
+          wc -l |
+          xargs echo |
+          xargs printf "%s%s\n" "finished_task_count=" |
+          xargs echo >> $GITHUB_ENV
+          
+          echo '${{ toJson(github.event.changes) }}' | 
+          jq ".body.from" |
+          grep -oE "\- \[ \]" |
+          wc -l |
+          xargs echo |
+          xargs printf "%s%s\n" "unfinished_task_count=" |
+          xargs echo >> $GITHUB_ENV
+        env:
+          NUMBER: ${{ github.event.issue.number }}
+          COMMENT: ${{ toJson(github.event.comment) }}
+          CHANGES: ${{ toJson(github.event.changes) }}
+      - run: |
+          exit 0
+        if: env.finished_task_count == 1 && env.unfinished_task_count == 1 && env.previous_task_count == 1 && env.current_task_count == 1
+      - run: |
+          exit 1
+  update-expected-image:
+    name: do update expected image
+    needs: pr_commented
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.16.0
+      - run: |
+          npm run dev &
+          npm run capture-actual
+          npm run update-expected
+          pkill elm
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git commit -m "update expected"
+          git push
+
