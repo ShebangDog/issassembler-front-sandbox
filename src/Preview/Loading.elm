@@ -3,6 +3,7 @@ module Preview.Loading exposing (..)
 import Browser
 import Html.Styled exposing (Html)
 import Loading
+import Preview.GlobalStyle
 
 
 type Msg
@@ -42,7 +43,11 @@ update msg model =
 
 view : Model -> Html msg
 view model =
-    Loading.view { span = 1 }
+    Html.Styled.div
+        []
+        [ Preview.GlobalStyle.stopAnimation
+        , Loading.view { span = 1 }
+        ]
 
 
 subscriptions : Model -> Sub msg
