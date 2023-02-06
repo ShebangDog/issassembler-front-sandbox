@@ -16,4 +16,4 @@ const count = Object.entries(json)
 
 const isPassed = count === 0
 
-process.exit(isPassed ? 0 : 1)
+console.log(isPassed ? 0 : 1)
