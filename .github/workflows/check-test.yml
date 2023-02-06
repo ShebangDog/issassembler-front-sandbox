@@ -40,6 +40,7 @@ jobs:
     needs: check-is-passed
     # vrtが落ちた場合このjobを実行する
     steps:
+      - uses: actions/checkout@v3
       - name: make result of vrt
         run: |
           cat << EOF >> results
