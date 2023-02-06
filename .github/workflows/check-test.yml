@@ -32,7 +32,7 @@ jobs:
       - run: pkill elm
       - run: |
           node ./script/isPassed.js ../reg.json |
-          xargs -IVAL echo "is_pass=VAL"
+          xargs -IVAL echo "is_pass=VAL" >> $GITHUB_OUTPUT
         id: check_is_pass
         continue-on-error: true
   notify-vrt-result:
