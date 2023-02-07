@@ -32,7 +32,7 @@ jobs:
         continue-on-error: true
       - run: pkill elm
       - run: |
-          ./script/formatter.js ../reg.json |
+          node ./script/formatter.js ../reg.json |
           xargs -IVAL "vrt_result=VAL" >> $GITHUB_OUTPUT
         id: format_vrt_result
       - run: |
