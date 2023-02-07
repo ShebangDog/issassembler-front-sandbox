@@ -33,7 +33,7 @@ jobs:
       - run: pkill elm
       - run: |
           node ./script/formatter.js ../reg.json |
-          xargs -IVAL "vrt_result=VAL" >> $GITHUB_OUTPUT
+          xargs -IVAL echo "vrt_result=VAL" >> $GITHUB_OUTPUT
         id: format_vrt_result
       - run: |
           node ./script/isPassed.js ../reg.json |
