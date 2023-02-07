@@ -65,7 +65,7 @@ jobs:
       #       ./report.html
       # FIXME: 実行側から見た相対パスを渡せるようにしたい。(./reg.jsonを渡して動作するようになればOK)
       # 現段階では'../reg.json'といったふうに、スクリプトとの相対値を渡さないと動作しない。
-      - run: echo ${{needs.check-is-passed.outputs.vrt_result}} >> results
+      - run: echo "${{needs.check-is-passed.outputs.vrt_result}}" >> results
       - run: |
           cat << EOF >> results
           - [ ] 予期しない[差分]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID#Artifacts)がないことを確認しました
