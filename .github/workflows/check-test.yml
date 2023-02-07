@@ -32,8 +32,9 @@ jobs:
         continue-on-error: true
       - run: pkill elm
       - run: |
-          node ./script/formatter.js ../reg.json |
-          xargs -IVAL echo "vrt_result=VAL" >> $GITHUB_OUTPUT
+          echo node ./script/formatter.js ../reg.json
+      - run: |
+          echo "vrt_result=hello" >> $GITHUB_OUTPUT
         id: format_vrt_result
       - run: |
           node ./script/isPassed.js ../reg.json |
@@ -53,6 +54,15 @@ jobs:
           ## Visual regression testの結果
           @$GITHUB_ACTOR
           EOF
+      # - name: upload result as artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: test-result
+      #     path: |
+      #       ./expected/src/Preview/**/*.png
+      #       ./screenshot/src/Preview/**/*.png
+      #       ./diff/**/*.png
+      #       ./report.html
       # FIXME: 実行側から見た相対パスを渡せるようにしたい。(./reg.jsonを渡して動作するようになればOK)
       # 現段階では'../reg.json'といったふうに、スクリプトとの相対値を渡さないと動作しない。
       - run: echo ${{needs.check-is-passed.outputs.vrt_result}} >> results
