@@ -10,16 +10,20 @@ jobs:
     steps:
       - run: |
           echo '${{ toJson(github.event.issue) }}' | jq ".id" | xargs -IVAL echo "comment_id=VAL" >> $GITHUB_OUTPUT
+      - run: |
           gh api /repos/${{github.repository}}/issues/${{github.event.issue.number}}/comments | 
-          jq --raw-input | xargs -IVAL node ./script/getNewestComment.js VAL |
-          jq ".id" | 
-          xargs -IVAL echo "newest_comment_id=VAL" >> $GITHUB_OUTPUT
+          jq --raw-input | xargs -IVAL node ./script/getNewestComment.js VAL
+        # jq ".id" | 
+        # xargs -IVAL echo "newest_comment_id=VAL" >> $GITHUB_OUTPUT
+      - run: |
           echo $GITHUB_ACTOR
+      - run: |
           echo '${{ toJson(github.event.user) }}' | jq ".id" | xargs -IVAL echo "comment_author_id=VAL" >> $GITHUB_OUTPUT
+      - run: |
           echo '${{ toJson(github.event.changes) }}' | jq ".body.from" | xargs echo "previous value: " >> message
+      - run: |
           echo '${{ toJson(github.event.comment) }}' | jq ".body" | xargs echo "current value: " >> message
-          cat message
-          
+      - run: |
           echo '${{ toJson(github.event.changes) }}' | 
           jq ".body.from" |
           grep -oE "\- \[ \]|\- \[x\]" |
@@ -27,7 +31,7 @@ jobs:
           xargs echo |
           xargs printf "%s%s\n" "previous_task_count=" |
           xargs echo >> $GITHUB_ENV
-          
+      - run: |
           echo '${{ toJson(github.event.comment) }}' | 
           jq ".body" |
           grep -oE "\- \[ \]|\- \[x\]" |
@@ -35,7 +39,7 @@ jobs:
           xargs echo |
           xargs printf "%s%s\n" "current_task_count=" |
           xargs echo >> $GITHUB_ENV
-          
+      - run: |
           echo '${{ toJson(github.event.comment) }}' | 
           jq ".body" |
           grep -oE "\- \[x\]" |
@@ -43,7 +47,7 @@ jobs:
           xargs echo |
           xargs printf "%s%s\n" "finished_task_count=" |
           xargs echo >> $GITHUB_ENV
-          
+      - run: |
           echo '${{ toJson(github.event.changes) }}' | 
           jq ".body.from" |
           grep -oE "\- \[ \]" |
