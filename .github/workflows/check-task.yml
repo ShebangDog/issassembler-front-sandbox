@@ -9,6 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
+          echo '${{ toJson(github.event.issue) }}' | jq ".id" | xargs -IVAL echo "comment_id=VAL" >> $GITHUB_OUTPUT
+          gh api /repos/${{github.repository}}/issues/${{github.event.issue.number}}/comments | 
+          jq --raw-input | xargs -IVAL node ./script/getNewestComment.js VAL |
+          jq ".id" | 
+          xargs -IVAL echo "newest_comment_id=VAL" >> $GITHUB_OUTPUT
+          echo $GITHUB_ACTOR
+          echo '${{ toJson(github.event.user) }}' | jq ".id" | xargs -IVAL echo "comment_author_id=VAL" >> $GITHUB_OUTPUT
           echo '${{ toJson(github.event.changes) }}' | jq ".body.from" | xargs echo "previous value: " >> message
           echo '${{ toJson(github.event.comment) }}' | jq ".body" | xargs echo "current value: " >> message
           cat message
