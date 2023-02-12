@@ -28,7 +28,7 @@ jobs:
       - name: declare_comment_url 
         run: |
           echo '${{ toJson(github.event.comment) }}' | 
-          jq ".issue_url" |
+          jq ".url" |
           xargs echo |
           xargs printf "%s%s\n" "comment_url=" |
           xargs echo >> $GITHUB_ENV
