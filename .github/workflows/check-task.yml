@@ -2,15 +2,13 @@ name: check-task
 on:
   issue_comment:
     types: [edited]
+env:
+  BOT_NAME: visual-regression-test-notifier
 jobs:
   pr_commented:
     name: PR comment
     if: github.event.issue.pull_request
     runs-on: ubuntu-latest
-    env:
-      BOT_NAME: visual-regression-test-notifier
-    outputs:
-      bot_name: ${{ BOT_NAME }}
     steps:
       - name: gh api
         id: make-destination-branch-name
@@ -111,7 +109,7 @@ jobs:
           npm run update-expected
           pkill elm
       - run: |
-          git config user.name ${{ needs.pr_commented.outputs.bot_name }}
+          git config user.name $BOT_NAME
           git config user.email twilight.sky.asterisk@gmail.com
           git add expected/src/.
           git commit -m "update expected"
