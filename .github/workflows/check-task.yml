@@ -24,7 +24,7 @@ jobs:
           fetch-depth: 0
       - name: declare_comment_id
         run: |
-          echo '${{ toJson(github.event.issue) }}' | 
+          echo '${{ toJson(github.event.comment) }}' | 
           jq ".id" |
           xargs echo |
           xargs printf "%s%s\n" "comment_id=" |
