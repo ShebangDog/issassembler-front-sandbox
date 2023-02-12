@@ -13,7 +13,7 @@ jobs:
       bot_name: $BOT_NAME
     steps:
       - run: |
-          echo "${{ toJson(github.event.issue) }}" | 
+          echo '${{ toJson(github.event.issue) }}' | 
           jq ".id" |
           xargs echo |
           xargs printf "%s%s\n" "comment_id=" |
