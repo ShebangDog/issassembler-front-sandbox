@@ -20,7 +20,7 @@ jobs:
           xargs echo >> $GITHUB_ENV
       - run: |
           gh api /repos/${{github.repository}}/issues/${{github.event.issue.number}}/comments | 
-          jq --raw-input | xargs -IVAL node ./script/getNewestComment.js $BOT_NAME VAL |
+          jq --raw-input | xargs  node ./script/getNewestComment.js $BOT_NAME |
           xargs echo |
           xargs printf "%s%s\n" "newest_comment_id=" |
           xargs echo >> $GITHUB_ENV
