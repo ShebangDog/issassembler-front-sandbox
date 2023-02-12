@@ -25,6 +25,14 @@ jobs:
           xargs echo |
           xargs printf "%s%s\n" "comment_id=" |
           xargs echo >> $GITHUB_ENV
+            - name: declare_comment_id
+      - name: declare_comment_url 
+        run: |
+          echo '${{ toJson(github.event.comment) }}' | 
+          jq ".issue_url |
+          xargs echo |
+          xargs printf "%s%s\n" "comment_url=" |
+          xargs echo >> $GITHUB_ENV
       - name: declare_newest_comment_id
         run: |
           gh api /repos/${{github.repository}}/issues/${{github.event.issue.number}}/comments >> issue.json
