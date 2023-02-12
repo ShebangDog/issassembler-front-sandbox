@@ -10,7 +10,7 @@ const {BOT} = Type
 
 const filteredByAuthorName = commentList.filter(comment => comment.user.type === BOT)
 
-const sortedByUpdatedAt = [...filteredByAuthorName]
-    .sort((left, right) => new Date(left.updated_at) - new Date(right.updated_at))
+const sortedByCreatedAt = [...filteredByAuthorName]
+    .sort((left, right) => new Date(left.created_at) - new Date(right.created_at))
 
-console.log(JSON.stringify(sortedByUpdatedAt.at(-1)))
+console.log(JSON.stringify(sortedByCreatedAt.at(-1)))
