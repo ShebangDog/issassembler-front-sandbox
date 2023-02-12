@@ -1,17 +1,16 @@
-const [authorName, commentList] = process.argv.slice(2)
+const commentListPath = process.argv[2]
 
-console.log(commentList)
+const commentList = require(`../${commentListPath}`)
 
 const Type = {
-    BOT: "BOT"
+    BOT: "Bot"
 }
 
 const {BOT} = Type
 
-const filteredByAuthorName = commentList
-    .filter(comment => comment.type === BOT && comment.user.login.startsWith(authorName))
+const filteredByAuthorName = commentList.filter(comment => comment.user.type === BOT)
 
-const sortedByUpdatedAt = [...filteredByAuthorName].sort((left, right) => new Date(left.updated_at) - new Date(right.updated_at))
+const sortedByUpdatedAt = [...filteredByAuthorName]
+    .sort((left, right) => new Date(left.updated_at) - new Date(right.updated_at))
 
 console.log(sortedByUpdatedAt[0])
-    
