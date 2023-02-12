@@ -109,8 +109,8 @@ jobs:
           npm run update-expected
           pkill elm
       - run: |
-          git config user.name $BOT_NAME
-          git config user.email twilight.sky.asterisk@gmail.com
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git add expected/src/.
           git commit -m "update expected"
           git push
