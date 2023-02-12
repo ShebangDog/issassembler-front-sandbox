@@ -12,6 +12,16 @@ jobs:
     outputs:
       bot_name: $BOT_NAME
     steps:
+      - name: gh api
+        id: make-destination-branch-name
+        run: |
+          gh api /repos/${{github.repository}}/pulls/${{github.event.issue.number}} |
+          jq .head.ref |
+          xargs -IVAL echo  "branch_name=VAL" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.make-destination-branch-name.outputs.branch_name }}
+          fetch-depth: 0
       - run: |
           echo '${{ toJson(github.event.issue) }}' | 
           jq ".id" |
