@@ -25,7 +25,6 @@ jobs:
           xargs echo |
           xargs printf "%s%s\n" "comment_id=" |
           xargs echo >> $GITHUB_ENV
-            - name: declare_comment_id
       - name: declare_comment_url 
         run: |
           echo '${{ toJson(github.event.comment) }}' | 
