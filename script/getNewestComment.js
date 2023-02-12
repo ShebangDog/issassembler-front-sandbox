@@ -13,4 +13,4 @@ const filteredByAuthorName = commentList.filter(comment => comment.user.type ===
 const sortedByUpdatedAt = [...filteredByAuthorName]
     .sort((left, right) => new Date(left.updated_at) - new Date(right.updated_at))
 
-console.log(sortedByUpdatedAt[0])
+console.log(JSON.stringify(sortedByUpdatedAt[0]))
