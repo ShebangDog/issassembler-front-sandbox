@@ -1,5 +1,10 @@
 name: code-check
-on: [push]
+on: 
+  pull_request:
+    branches:
+      - "main"
+      - "develop"
+      - "**/main"
 jobs:
   unit-test:
     runs-on: ubuntu-latest
