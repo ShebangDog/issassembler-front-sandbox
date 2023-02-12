@@ -10,7 +10,7 @@ jobs:
     env:
       BOT_NAME: visual-regression-test-notifier
     outputs:
-      bot_name: $BOT_NAME
+      bot_name: ${{ BOT_NAME }}
     steps:
       - name: gh api
         id: make-destination-branch-name
