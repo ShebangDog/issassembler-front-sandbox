@@ -8,6 +8,8 @@ jobs:
     if: github.event.issue.pull_request
     runs-on: ubuntu-latest
     steps:
+      - name: checkout
+        uses: actions/checkout@v3
       - name: make-destination-branch-name
         run: |
           gh api /repos/${{github.repository}}/pulls/${{github.event.issue.number}} |
