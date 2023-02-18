@@ -40,7 +40,8 @@ view : Model -> Html msg
 view model =
     Html.Styled.div
         []
-        [ Loading.view { span = 1 }
+        [ Preview.GlobalStyle.stopAnimation
+        , Loading.view { span = 1 }
         ]
 
 

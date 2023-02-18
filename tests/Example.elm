@@ -13,5 +13,5 @@ suite =
             \() ->
                 Expect.equal
                     (Main.view { status = Main.Loading }).title
-                    "Issassemblerr"
+                    "Issassembler"
         ]
