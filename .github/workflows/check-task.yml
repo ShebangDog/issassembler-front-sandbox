@@ -1,0 +1,109 @@
+name: check-task
+on:
+  issue_comment:
+    types: [edited]
+jobs:
+  pr_commented:
+    name: PR comment
+    if: github.event.issue.pull_request
+    runs-on: ubuntu-latest
+    steps:
+      - name: make-destination-branch-name
+        run: |
+          gh api /repos/${{github.repository}}/pulls/${{github.event.issue.number}} |
+          jq .head.ref |
+          xargs -IVAL echo  "branch_name=VAL" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: declare comment_id
+        run: |
+          echo '${{ toJson(github.event.comment) }}' | 
+          jq ".id" |
+          xargs printf "%s%s\n" "comment_id=" |
+          xargs echo >> $GITHUB_ENV
+      - name: declare comment_url 
+        run: |
+          echo '${{ toJson(github.event.comment) }}' | 
+          jq ".url" |
+          xargs printf "%s%s\n" "comment_url=" |
+          xargs echo >> $GITHUB_ENV
+      - name: declare newest_comment_id
+        run: |
+          gh api /repos/${{github.repository}}/issues/${{github.event.issue.number}}/comments >> issue.json
+          node ./script/getNewestComment.js issue.json | 
+          jq ".id" |
+          xargs printf "%s%s\n" "newest_comment_id=" |
+          xargs echo >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: declare previous_task_count
+        run: |
+          echo '${{ toJson(github.event.changes) }}' | 
+          jq ".body.from" |
+          grep -oE "\- \[ \]|\- \[x\]" |
+          wc -l |
+          xargs printf "%s%s\n" "previous_task_count=" |
+          xargs echo >> $GITHUB_ENV
+      - name: declare current_task_count
+        run: |
+          echo '${{ toJson(github.event.comment) }}' | 
+          jq ".body" |
+          grep -oE "\- \[ \]|\- \[x\]" |
+          wc -l |
+          xargs printf "%s%s\n" "current_task_count=" |
+          xargs echo >> $GITHUB_ENV
+      - name: declare finished_task_count
+        run: |
+          echo '${{ toJson(github.event.comment) }}' | 
+          jq ".body" |
+          grep -oE "\- \[x\]" |
+          wc -l |
+          xargs printf "%s%s\n" "finished_task_count=" |
+          xargs echo >> $GITHUB_ENV
+      - name: declare unfinished_task_count
+        run: |
+          echo '${{ toJson(github.event.changes) }}' | 
+          jq ".body.from" |
+          grep -oE "\- \[ \]" |
+          wc -l |
+          xargs printf "%s%s\n" "unfinished_task_count=" |
+          xargs echo >> $GITHUB_ENV
+      - name: Throws an error if a task is not completed or if a completed task is added as new.
+        if: ${{ env.finished_task_count != 1 || env.unfinished_task_count != 1 || env.previous_task_count != 1 || env.current_task_count != 1 || env.newest_comment_id != env.comment_id }}
+        run: exit 1
+  update-expected-image:
+    name: do update expected image
+    needs: pr_commented
+    runs-on: ubuntu-latest
+    steps:
+      # GitHub CLI api
+      # https://cli.github.com/manual/gh_api
+      - name: make-destination-branch-name
+        run: |
+          gh api /repos/${{github.repository}}/pulls/${{github.event.issue.number}} |
+          jq .head.ref |
+          xargs -IVAL echo  "branch_name=VAL" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ env.branch_name }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.16.0
+      - name: compare images
+        run: |
+          npm install
+          npm run dev &
+          npm run capture-actual
+          npm run update-expected
+          pkill elm
+      - name: update expected image
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email github-actions[bot]@users.noreply.github.com
+          git add expected/src/.
+          git commit -m "update expected"
+          git push
+
