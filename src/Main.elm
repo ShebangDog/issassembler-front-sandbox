@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), Status(..), init, main, subscriptions, update, view)
+module Main exposing (Status(..), view)
 
 import Browser exposing (Document)
 import Html.Styled exposing (button, div, text)
