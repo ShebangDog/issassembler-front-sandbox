@@ -1,6 +1,7 @@
 module Example exposing (..)
 
 import Expect
+import Html exposing (a)
 import Main
 import Test exposing (..)
 
@@ -12,7 +13,7 @@ suite =
             \() ->
                 Expect.equal
                     (Main.subscriptions
-                        { statusText = "Ready" }
+                        { status = Main.Loading }
                     )
                     Sub.none
         ]
