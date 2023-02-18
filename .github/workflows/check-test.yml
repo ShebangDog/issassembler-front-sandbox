@@ -15,3 +15,73 @@ jobs:
           node-version: 16.16.0
       - run: npm install
       - run: npm run test
+  check-is-passed:
+    runs-on: ubuntu-latest
+    outputs:
+      is_passed: ${{ steps.check_is_pass.outputs.is_pass }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.16.0
+      - name: compare images
+        run: | 
+          npm install
+          npm run dev &
+          npm run capture-actual
+          npm run compare
+          pkill elm
+        continue-on-error: true
+      - name: upload result as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-result
+          path: |
+            ./expected/src/Preview/**/*.png
+            ./screenshot/src/Preview/**/*.png
+            ./diff/**/*.png
+            ./report.html
+            ./reg.json
+      - name: declare is_pass
+        run: |
+          node ./script/isPassed.js ../reg.json |
+          xargs -IVAL echo "is_pass=VAL" >> $GITHUB_OUTPUT
+        id: check_is_pass
+        continue-on-error: true
+  notify-vrt-result:
+    runs-on: ubuntu-latest
+    needs: check-is-passed
+    if: needs.check-is-passed.outputs.is_passed == 1
+    # vrtが落ちた場合このjobを実行する
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download a single artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: test-result
+      - name: make result of vrt
+        run: |
+          cat << EOF >> results
+          ## Visual regression testの結果
+          @$GITHUB_ACTOR
+          EOF
+      # FIXME: 実行側から見た相対パスを渡せるようにしたい。(./reg.jsonを渡して動作するようになればOK)
+      # 現段階では'../reg.json'といったふうに、スクリプトとの相対値を渡さないと動作しない。
+      - name: make format
+        run: node ./script/formatter.js ../reg.json >> results
+      - name: make message
+        run: |
+          cat << EOF >> results
+          - [ ] 予期しない[差分]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID#Artifacts)がないことを確認しました
+          EOF
+      - name: notify to author
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          gh pr comment -F ./results "${URL}"
+      - run: |
+          exit 1
+      
