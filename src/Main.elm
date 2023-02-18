@@ -3,20 +3,27 @@ module Main exposing (Model, Msg(..), init, main, subscriptions, update, view)
 import Browser exposing (Document)
 import Html.Styled exposing (button, div, text)
 import Html.Styled.Events exposing (onClick)
+import Loading
+import None
 
 
 type Msg
     = Message
 
 
+type Status
+    = Success
+    | Loading
+
+
 type alias Model =
-    { statusText : String
+    { status : Status
     }
 
 
 init : () -> ( Model, Cmd msg )
 init () =
-    ( { statusText = "Ready" }
+    ( { status = Loading }
     , Cmd.none
     )
 
@@ -35,9 +42,19 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Message ->
-            ( { model | statusText = "Loaded" }
+            ( { model | status = Success }
             , Cmd.none
             )
+
+
+statusText : Status -> String
+statusText status =
+    case status of
+        Loading ->
+            "fetch"
+
+        Success ->
+            "loaded"
 
 
 view : Model -> Document Msg
@@ -47,7 +64,16 @@ view model =
         List.map Html.Styled.toUnstyled
             [ div
                 []
-                [ button [ onClick Message ] [ text model.statusText ] ]
+                [ button [ onClick Message ]
+                    [ text (statusText model.status)
+                    ]
+                , case model.status of
+                    Loading ->
+                        Loading.view { span = 2 }
+
+                    Success ->
+                        None.view
+                ]
             ]
     }
 
