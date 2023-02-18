@@ -8,12 +8,10 @@ import Test exposing (..)
 
 suite : Test
 suite =
-    describe "subscription function"
-        [ test "subscriptionsがNoneを返すこと" <|
+    describe "Main.view"
+        [ test "titleがIssassemblerであること" <|
             \() ->
                 Expect.equal
-                    (Main.subscriptions
-                        { status = Main.Loading }
-                    )
-                    Sub.none
+                    (Main.view { status = Main.Loading }).title
+                    "Issassemblerr"
         ]
