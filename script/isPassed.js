@@ -4,8 +4,9 @@ const json = require(arg)
 const keys = ["newItems", "deletedItems", "diffItems"]
 
 const has = (json) => (key) => !!json[key]
+const jsonHas = has(json)
 
-const hasAllKey = keys.map(has(json)).every(Boolean)
+const hasAllKey = keys.map(jsonHas).every(Boolean)
 
 if (!hasAllKey) throw Error("expect result of reg-cli")
 
