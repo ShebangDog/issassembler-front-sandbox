@@ -2,9 +2,7 @@ name: code-check
 on: 
   push:
     branches:
-      - "main"
-      - "develop"
-      - "**/main"
+      - "**"
   pull_request:
     branches:
       - "main"
