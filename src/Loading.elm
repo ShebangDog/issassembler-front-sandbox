@@ -15,7 +15,7 @@ view : Model -> Html msg
 view model =
     div
         [ css
-            [ Css.width (Css.px 482)
+            [ Css.width (Css.px 48)
             , Css.height (Css.px 48)
             , Css.property "background-image" "conic-gradient(red 140deg, black 140deg, transparent 360deg)"
             , Css.borderRadius (Css.pct 50)
