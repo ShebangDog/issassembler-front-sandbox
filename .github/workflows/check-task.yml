@@ -95,6 +95,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.16.0
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: compare images
         run: |
           npm install
