@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: make-destination-branch-name
         run: |
           gh api /repos/${{github.repository}}/pulls/${{github.event.issue.number}} |
