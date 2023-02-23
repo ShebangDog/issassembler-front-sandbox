@@ -1,8 +1,10 @@
 name: code-check
 on: 
-  push:
+  pull_request:
     branches:
-      - "**"
+      - "main"
+      - "develop"
+      - "**/main"
 jobs:
   unit-test:
     runs-on: ubuntu-latest
