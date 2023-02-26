@@ -1,16 +1,19 @@
 module Main exposing (Status(..), view)
 
 import Browser exposing (Document)
+import Browser.Navigation
 import Css.Global
 import Css.Reset
-import Html.Styled exposing (button, div, li, text, ul)
-import Html.Styled.Events exposing (onClick)
-import Loading
-import None
+import Html.Styled exposing (a, div, h1, header, li, nav, p, text, ul)
+import Html.Styled.Attributes exposing (href)
+import Route exposing (Route)
+import Url
+import Url.Parser exposing (Parser)
 
 
 type Msg
-    = Message
+    = LinkClicked Browser.UrlRequest
+    | UrlChanged Route
 
 
 type Status
@@ -20,69 +23,132 @@ type Status
 
 type alias Model =
     { status : Status
+    , key : Browser.Navigation.Key
+    , route : Route
     }
 
 
-init : () -> ( Model, Cmd msg )
-init () =
-    ( { status = Loading }
+init : () -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
+init () url key =
+    ( Model Loading key (Maybe.withDefault Route.top (parseUrlAsRoute url))
     , Cmd.none
     )
 
 
 main : Program () Model Msg
 main =
-    Browser.document
+    Browser.application
         { init = init
         , view = view
         , update = update
         , subscriptions = subscriptions
+        , onUrlRequest = LinkClicked
+        , onUrlChange = handleUrlChange
         }
+
+
+parseUrlAsRoute : Url.Url -> Maybe Route
+parseUrlAsRoute url =
+    Url.Parser.parse routeParser url
+
+
+handleUrlChange : Url.Url -> Msg
+handleUrlChange url =
+    UrlChanged (Maybe.withDefault Route.top (parseUrlAsRoute url))
+
+
+routeParser : Parser (Route -> Route) Route
+routeParser =
+    Url.Parser.oneOf
+        ([ Route.top, Route.history ]
+            |> List.map (\route -> Url.Parser.map route (Url.Parser.s (Route.toString route)))
+        )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Message ->
-            ( { model | status = Success }
-            , Cmd.none
-            )
+        LinkClicked urlRequest ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model, Browser.Navigation.pushUrl model.key (Url.toString url) )
+
+                Browser.External href ->
+                    ( model, Browser.Navigation.load href )
+
+        UrlChanged route ->
+            ( { model | route = route }, Cmd.none )
 
 
-statusText : Status -> String
-statusText status =
-    case status of
-        Loading ->
-            "fetch"
+navigationRoute : List Route
+navigationRoute =
+    [ Route.top, Route.history ]
 
-        Success ->
-            "loaded"
+
+navigationBar : List Route -> Route -> Html.Styled.Html Msg
+navigationBar routeList currentRoute =
+    header
+        []
+        [ h1 [] [ text title ]
+        , div []
+            [ nav []
+                [ ul []
+                    (routeList
+                        |> List.map
+                            (\route ->
+                                let
+                                    content =
+                                        text <| Route.toString route
+
+                                    element =
+                                        if route == currentRoute then
+                                            p [] [ content ]
+
+                                        else
+                                            a [ transition route ] [ content ]
+                                in
+                                li [] [ element ]
+                            )
+                    )
+                ]
+            ]
+        ]
 
 
 view : Model -> Document Msg
 view model =
-    { title = "Issassembler"
+    { title = title
     , body =
-        List.map Html.Styled.toUnstyled
-            [ div
-                []
-                [ Css.Global.global Css.Reset.ericMeyer
-                , ul []
-                    [ li [] [ text "確認用" ]
-                    , li [] [ text "確認用" ]
-                    ]
-                , button [ onClick Message ]
-                    [ text (statusText model.status)
-                    ]
-                , case model.status of
-                    Loading ->
-                        Loading.view { span = 2 }
+        List.map Html.Styled.toUnstyled <|
+            Css.Global.global Css.Reset.ericMeyer
+                :: (navigationBar navigationRoute model.route
+                        :: (case model.route of
+                                Route.Top _ ->
+                                    [ div
+                                        []
+                                        [ text "main"
+                                        ]
+                                    ]
 
-                    Success ->
-                        None.view
-                ]
-            ]
+                                Route.History _ ->
+                                    [ div
+                                        []
+                                        [ text "history"
+                                        ]
+                                    ]
+                           )
+                   )
     }
+
+
+title : String
+title =
+    "Issassembler"
+
+
+transition : Route -> Html.Styled.Attribute Msg
+transition route =
+    href ("/" ++ Route.toString route)
 
 
 subscriptions : Model -> Sub msg

@@ -1,17 +1,21 @@
 module Example exposing (..)
 
 import Expect
-import Html exposing (a)
-import Main
+import Route
 import Test exposing (..)
 
 
 suite : Test
 suite =
-    describe "Main.view"
-        [ test "titleがIssassemblerであること" <|
+    describe "Route.toString"
+        [ test "TopをtoStringに渡すとTopと返すこと" <|
             \() ->
                 Expect.equal
-                    (Main.view { status = Main.Loading }).title
-                    "Issassembler"
+                    (Route.toString Route.top)
+                    "Top"
+        , test "HistoryをtoStringに渡すとHistoryと返すこと" <|
+            \() ->
+                Expect.equal
+                    (Route.toString Route.history)
+                    "History"
         ]
