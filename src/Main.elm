@@ -2,6 +2,8 @@ module Main exposing (Status(..), view)
 
 import Browser exposing (Document)
 import Browser.Navigation
+import Css.Global
+import Css.Reset
 import Html.Styled exposing (a, div, h1, header, li, nav, p, text, ul)
 import Html.Styled.Attributes exposing (href)
 import Route exposing (Route)
@@ -118,21 +120,23 @@ view model =
     { title = title
     , body =
         List.map Html.Styled.toUnstyled <|
-            navigationBar navigationRoute model.route
-                :: (case model.route of
-                        Route.Top _ ->
-                            [ div
-                                []
-                                [ text "main"
-                                ]
-                            ]
+            Css.Global.global Css.Reset.ericMeyer
+                :: (navigationBar navigationRoute model.route
+                        :: (case model.route of
+                                Route.Top _ ->
+                                    [ div
+                                        []
+                                        [ text "main"
+                                        ]
+                                    ]
 
-                        Route.History _ ->
-                            [ div
-                                []
-                                [ text "history"
-                                ]
-                            ]
+                                Route.History _ ->
+                                    [ div
+                                        []
+                                        [ text "history"
+                                        ]
+                                    ]
+                           )
                    )
     }
 
