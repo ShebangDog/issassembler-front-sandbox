@@ -83,37 +83,42 @@ navigationRoute =
     [ Route.top, Route.history ]
 
 
+navigationBar : List Route -> Route -> Html.Styled.Html Msg
+navigationBar routeList currentRoute =
+    header
+        []
+        [ h1 [] [ text title ]
+        , div []
+            [ nav []
+                [ ul []
+                    (routeList
+                        |> List.map
+                            (\route ->
+                                let
+                                    content =
+                                        text <| Route.toString route
+
+                                    element =
+                                        if route == currentRoute then
+                                            p [] [ content ]
+
+                                        else
+                                            a [ transition route ] [ content ]
+                                in
+                                li [] [ element ]
+                            )
+                    )
+                ]
+            ]
+        ]
+
+
 view : Model -> Document Msg
 view model =
     { title = title
     , body =
         List.map Html.Styled.toUnstyled <|
-            header
-                []
-                [ h1 [] [ text title ]
-                , div []
-                    [ nav []
-                        [ ul []
-                            (navigationRoute
-                                |> List.map
-                                    (\route ->
-                                        let
-                                            content =
-                                                text <| Route.toString route
-
-                                            component =
-                                                if route == model.route then
-                                                    p [] [ content ]
-
-                                                else
-                                                    a [ transition route ] [ content ]
-                                        in
-                                        li [] [ component ]
-                                    )
-                            )
-                        ]
-                    ]
-                ]
+            navigationBar navigationRoute model.route
                 :: (case model.route of
                         Route.Top _ ->
                             [ div
