@@ -2,7 +2,7 @@ module Main exposing (Status(..), view)
 
 import Browser exposing (Document)
 import Browser.Navigation
-import Html.Styled exposing (a, div, text)
+import Html.Styled exposing (a, div, h1, header, li, nav, p, text, ul)
 import Html.Styled.Attributes exposing (href)
 import Route exposing (Route)
 import Url
@@ -78,29 +78,57 @@ update msg model =
             ( { model | route = route }, Cmd.none )
 
 
+navigationRoute : List Route
+navigationRoute =
+    [ Route.top, Route.history ]
+
+
 view : Model -> Document Msg
 view model =
     { title = "Issassembler"
     , body =
-        List.map Html.Styled.toUnstyled
-            (case model.route of
-                Route.Top from ->
-                    [ div
-                        []
-                        [ text "main"
-                        , div [] [ a [ transition (Route.toHistory from) ] [ text "History" ] ]
-                        , div [] [ a [ transition (Route.toTop from) ] [ text "Main" ] ]
-                        ]
-                    ]
+        List.map Html.Styled.toUnstyled <|
+            header
+                []
+                [ h1 [] [ text "Issassembler" ]
+                , div []
+                    [ nav []
+                        [ ul []
+                            (navigationRoute
+                                |> List.map
+                                    (\route ->
+                                        let
+                                            content =
+                                                text <| Route.toString route
 
-                Route.History from ->
-                    [ div
-                        []
-                        [ text "history"
-                        , a [ transition (Route.toTop from) ] [ text "Main" ]
+                                            component =
+                                                if route == model.route then
+                                                    p [] [ content ]
+
+                                                else
+                                                    a [ transition route ] [ content ]
+                                        in
+                                        li [] [ component ]
+                                    )
+                            )
                         ]
                     ]
-            )
+                ]
+                :: (case model.route of
+                        Route.Top _ ->
+                            [ div
+                                []
+                                [ text "main"
+                                ]
+                            ]
+
+                        Route.History _ ->
+                            [ div
+                                []
+                                [ text "history"
+                                ]
+                            ]
+                   )
     }
 
 
