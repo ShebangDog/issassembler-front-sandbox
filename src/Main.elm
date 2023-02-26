@@ -85,12 +85,12 @@ navigationRoute =
 
 view : Model -> Document Msg
 view model =
-    { title = "Issassembler"
+    { title = title
     , body =
         List.map Html.Styled.toUnstyled <|
             header
                 []
-                [ h1 [] [ text "Issassembler" ]
+                [ h1 [] [ text title ]
                 , div []
                     [ nav []
                         [ ul []
@@ -130,6 +130,11 @@ view model =
                             ]
                    )
     }
+
+
+title : String
+title =
+    "Issassembler"
 
 
 transition : Route -> Html.Styled.Attribute Msg
