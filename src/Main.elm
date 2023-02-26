@@ -80,11 +80,11 @@ update msg model =
 
 view : Model -> Document Msg
 view model =
-    case model.route of
-        Route.Top from ->
-            { title = "main"
-            , body =
-                List.map Html.Styled.toUnstyled
+    { title = "Issassembler"
+    , body =
+        List.map Html.Styled.toUnstyled
+            (case model.route of
+                Route.Top from ->
                     [ div
                         []
                         [ text "main"
@@ -92,19 +92,16 @@ view model =
                         , div [] [ a [ transition (Route.toTop from) ] [ text "Main" ] ]
                         ]
                     ]
-            }
 
-        Route.History from ->
-            { title = "hisotry"
-            , body =
-                List.map Html.Styled.toUnstyled
+                Route.History from ->
                     [ div
                         []
                         [ text "history"
                         , a [ transition (Route.toTop from) ] [ text "Main" ]
                         ]
                     ]
-            }
+            )
+    }
 
 
 transition : Route -> Html.Styled.Attribute Msg
