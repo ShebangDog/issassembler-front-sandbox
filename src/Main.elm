@@ -3,7 +3,7 @@ module Main exposing (Status(..), view)
 import Browser exposing (Document)
 import Css.Global
 import Css.Reset
-import Html.Styled exposing (button, div text)
+import Html.Styled exposing (button, div, li, text, ul)
 import Html.Styled.Events exposing (onClick)
 import Loading
 import None
@@ -67,6 +67,10 @@ view model =
             [ div
                 []
                 [ Css.Global.global Css.Reset.ericMeyer
+                , ul []
+                    [ li [] [ text "確認用" ]
+                    , li [] [ text "確認用" ]
+                    ]
                 , button [ onClick Message ]
                     [ text (statusText model.status)
                     ]
