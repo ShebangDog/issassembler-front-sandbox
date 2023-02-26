@@ -12,14 +12,12 @@ type Allowed
 type Route
     = Top
         (Transition
-            { top : Allowed
-            , history : Allowed
+            { history : Allowed
             }
         )
     | History
         (Transition
             { top : Allowed
-            , history : Allowed
             }
         )
 
