@@ -1,7 +1,9 @@
 module Main exposing (Status(..), view)
 
 import Browser exposing (Document)
-import Html.Styled exposing (button, div, text)
+import Css.Global
+import Css.Reset
+import Html.Styled exposing (button, div text)
 import Html.Styled.Events exposing (onClick)
 import Loading
 import None
@@ -64,7 +66,8 @@ view model =
         List.map Html.Styled.toUnstyled
             [ div
                 []
-                [ button [ onClick Message ]
+                [ Css.Global.global Css.Reset.ericMeyer
+                , button [ onClick Message ]
                     [ text (statusText model.status)
                     ]
                 , case model.status of
