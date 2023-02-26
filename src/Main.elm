@@ -28,7 +28,7 @@ type alias Model =
 
 init : () -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
 init () url key =
-    ( Model Loading key (Maybe.withDefault Route.top (Url.Parser.parse routeParser url))
+    ( Model Loading key (Maybe.withDefault Route.top (parseUrlAsRoute url))
     , Cmd.none
     )
 
@@ -45,9 +45,14 @@ main =
         }
 
 
+parseUrlAsRoute : Url.Url -> Maybe Route
+parseUrlAsRoute url =
+    Url.Parser.parse routeParser url
+
+
 handleUrlChange : Url.Url -> Msg
 handleUrlChange url =
-    UrlChanged (Maybe.withDefault Route.top (Url.Parser.parse routeParser url))
+    UrlChanged (Maybe.withDefault Route.top (parseUrlAsRoute url))
 
 
 routeParser : Parser (Route -> Route) Route
