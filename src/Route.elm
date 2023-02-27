@@ -63,12 +63,12 @@ suite : Test
 suite =
     describe "Route module"
         [ describe "toString"
-            [ test "TopをtoStringに渡すとTopと返すこと" <|
+            [ test "toStringにTopを渡すとTopと返すこと" <|
                 \() ->
                     Expect.equal
                         (toString top)
                         "Top"
-            , test "HistoryをtoStringに渡すとHistoryと返すこと" <|
+            , test "toStringにHistoryを渡すとHistoryと返すこと" <|
                 \() ->
                     Expect.equal
                         (toString history)
