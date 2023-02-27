@@ -61,15 +61,17 @@ history =
 
 suite : Test
 suite =
-    describe "Route.toString"
-        [ test "TopをtoStringに渡すとTopと返すこと" <|
-            \() ->
-                Expect.equal
-                    (toString top)
-                    "Top"
-        , test "HistoryをtoStringに渡すとHistoryと返すこと" <|
-            \() ->
-                Expect.equal
-                    (toString history)
-                    "History"
+    describe "Route module"
+        [ describe "toString"
+            [ test "TopをtoStringに渡すとTopと返すこと" <|
+                \() ->
+                    Expect.equal
+                        (toString top)
+                        "Top"
+            , test "HistoryをtoStringに渡すとHistoryと返すこと" <|
+                \() ->
+                    Expect.equal
+                        (toString history)
+                        "History"
+            ]
         ]
