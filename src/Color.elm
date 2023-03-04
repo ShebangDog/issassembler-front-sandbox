@@ -1,4 +1,4 @@
-module Color exposing (DisplayMode(..), defaultTheme, palette, theme)
+module Color exposing (DisplayMode(..), defaultTheme, displayModeSet, palette, theme, toString)
 
 import Css
 import Theme exposing (Theme)
@@ -57,3 +57,24 @@ theme mode =
 
         Dark ->
             darkTheme
+
+
+displayModeSet : List DisplayMode
+displayModeSet =
+    [ Default
+    , Light
+    , Dark
+    ]
+
+
+toString : DisplayMode -> String
+toString mode =
+    case mode of
+        Default ->
+            "default"
+
+        Light ->
+            "light"
+
+        Dark ->
+            "dark"
