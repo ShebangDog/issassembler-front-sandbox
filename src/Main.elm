@@ -7,7 +7,7 @@ import Css
 import Css.Global
 import Css.Reset
 import Html.Styled exposing (a, button, div, h1, header, li, nav, p, text, ul)
-import Html.Styled.Attributes exposing (css, href)
+import Html.Styled.Attributes exposing (href)
 import Html.Styled.Events exposing (onClick)
 import Route exposing (Route)
 import Url
