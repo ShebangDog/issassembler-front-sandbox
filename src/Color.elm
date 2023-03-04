@@ -9,3 +9,11 @@ palette =
     , apache = Css.hex "#DFC370"
     , flatBlue = Css.hex "#3F76A6"
     }
+
+
+theme : { primary : Css.Color, secondary : Css.Color, tertiary : Css.Color }
+theme =
+    { primary = palette.turkishRose
+    , secondary = palette.flatBlue
+    , tertiary = palette.apache
+    }
