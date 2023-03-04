@@ -1,7 +1,6 @@
 module Color exposing (DisplayMode(..), defaultTheme, displayModeSet, palette, theme, toString)
 
 import Css
-import Theme exposing (Theme)
 
 
 palette : { turkishRose : Css.Color, apache : Css.Color, flatBlue : Css.Color }
