@@ -122,7 +122,7 @@ view model =
     { title = title
     , body =
         List.map Html.Styled.toUnstyled <|
-            Css.Global.global (Css.Global.body [ Css.backgroundColor Color.theme.primary ] :: Css.Reset.ericMeyer)
+            Css.Global.global (Css.Global.body [ Css.backgroundColor (Color.theme Color.Default).primary ] :: Css.Reset.ericMeyer)
                 :: (navigationBar navigationRoute model.route
                         :: (case model.route of
                                 Route.Top _ ->
