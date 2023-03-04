@@ -1,4 +1,4 @@
-module Color exposing (palette)
+module Color exposing (palette, theme)
 
 import Css
 
