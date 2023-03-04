@@ -2,10 +2,12 @@ module Main exposing (Status(..), view)
 
 import Browser exposing (Document)
 import Browser.Navigation
+import Css
 import Css.Global
 import Css.Reset
 import Html.Styled exposing (a, div, h1, header, li, nav, p, text, ul)
-import Html.Styled.Attributes exposing (href)
+import Html.Styled.Attributes exposing (css, href)
+import Palette
 import Route exposing (Route)
 import Url
 import Url.Parser exposing (Parser)
@@ -120,7 +122,7 @@ view model =
     { title = title
     , body =
         List.map Html.Styled.toUnstyled <|
-            Css.Global.global Css.Reset.ericMeyer
+            Css.Global.global (Css.Global.body [ Css.backgroundColor Palette.palette.turkishRose ] :: Css.Reset.ericMeyer)
                 :: (navigationBar navigationRoute model.route
                         :: (case model.route of
                                 Route.Top _ ->
