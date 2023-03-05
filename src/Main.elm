@@ -2,10 +2,13 @@ module Main exposing (Status(..), view)
 
 import Browser exposing (Document)
 import Browser.Navigation
+import Color
+import Css
 import Css.Global
 import Css.Reset
-import Html.Styled exposing (a, div, h1, header, li, nav, p, text, ul)
+import Html.Styled exposing (a, button, div, h1, header, li, nav, p, text, ul)
 import Html.Styled.Attributes exposing (href)
+import Html.Styled.Events exposing (onClick)
 import Route exposing (Route)
 import Url
 import Url.Parser exposing (Parser)
@@ -14,6 +17,7 @@ import Url.Parser exposing (Parser)
 type Msg
     = LinkClicked Browser.UrlRequest
     | UrlChanged Route
+    | ModeChanged Color.DisplayMode
 
 
 type Status
@@ -25,12 +29,22 @@ type alias Model =
     { status : Status
     , key : Browser.Navigation.Key
     , route : Route
+    , mode : Color.DisplayMode
+    }
+
+
+initialModel : Url.Url -> Browser.Navigation.Key -> Model
+initialModel url key =
+    { status = Loading
+    , key = key
+    , route = Maybe.withDefault Route.top (parseUrlAsRoute url)
+    , mode = Color.Default
     }
 
 
 init : () -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
 init () url key =
-    ( Model Loading key (Maybe.withDefault Route.top (parseUrlAsRoute url))
+    ( initialModel url key
     , Cmd.none
     )
 
@@ -79,6 +93,9 @@ update msg model =
         UrlChanged route ->
             ( { model | route = route }, Cmd.none )
 
+        ModeChanged mode ->
+            ( { model | mode = mode }, Cmd.none )
+
 
 navigationRoute : List Route
 navigationRoute =
@@ -117,17 +134,20 @@ navigationBar routeList currentRoute =
 
 view : Model -> Document Msg
 view model =
+    let
+        theme =
+            Color.theme model.mode
+    in
     { title = title
     , body =
         List.map Html.Styled.toUnstyled <|
-            Css.Global.global Css.Reset.ericMeyer
+            Css.Global.global (Css.Global.body [ Css.backgroundColor theme.primary ] :: Css.Reset.ericMeyer)
                 :: (navigationBar navigationRoute model.route
                         :: (case model.route of
                                 Route.Top _ ->
                                     [ div
                                         []
-                                        [ text "main"
-                                        ]
+                                        (text "main" :: (Color.displayModeSet |> List.map (\mode -> button [ onClick (ModeChanged mode) ] [ text (Color.toString mode) ])))
                                     ]
 
                                 Route.History _ ->
