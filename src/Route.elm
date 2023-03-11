@@ -1,4 +1,7 @@
-module Route exposing (Route(..), history, toHistory, toString, toTop, top)
+module Route exposing (Route(..), history, suite, toHistory, toString, toTop, top)
+
+import Expect
+import Test exposing (Test, describe, test)
 
 
 type Transition a
@@ -50,3 +53,25 @@ top =
 history : Route
 history =
     History Transition
+
+
+
+-- テスト
+
+
+suite : Test
+suite =
+    describe "Route module"
+        [ describe "toString"
+            [ test "toStringにTopを渡すとTopと返すこと" <|
+                \() ->
+                    Expect.equal
+                        (toString top)
+                        "Top"
+            , test "toStringにHistoryを渡すとHistoryと返すこと" <|
+                \() ->
+                    Expect.equal
+                        (toString history)
+                        "History"
+            ]
+        ]

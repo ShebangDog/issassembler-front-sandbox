@@ -20,7 +20,7 @@
     "dev": "elm reactor",
     "fix": "run-s fix:*",
     "fix:package": "fixpack",
-    "test": "npx elm-test-rs",
+    "test": "npx elm-test-rs \"src/**/*.elm\"",
     "postinstall": "npx elm-tooling install"
   }
 }
