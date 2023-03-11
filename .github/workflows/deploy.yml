@@ -15,11 +15,12 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USER_NAME }}
           key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
-          envs: filename
+          # ssh-actionの仕様上アッパーケースである必要がある
+          envs: FILENAME
           script: |
             cd ${{ secrets.APP_CODE_PATH }}
             git pull origin main
-            elm make src/Main.elm --output=$filename
-            yes | cp $filename ${{ secrets.DEPLOY_SOURCE_PATH }}
+            elm make src/Main.elm --output=$FILENAME
+            yes | cp $FILENAME ${{ secrets.DEPLOY_SOURCE_PATH }}
         env: 
-          filename: "main.js"
+          FILENAME: "main.js"
