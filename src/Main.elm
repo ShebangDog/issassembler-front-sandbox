@@ -6,6 +6,7 @@ import Css.Global
 import Css.Reset
 import Html.Styled exposing (a, div, h1, header, li, nav, p, text, ul)
 import Html.Styled.Attributes exposing (href)
+import Json.Decode
 import Route exposing (Route)
 import Url
 import Url.Parser exposing (Parser)
@@ -21,21 +22,47 @@ type Status
     | Loading
 
 
+type alias Data =
+    { count : Int
+    }
+
+
 type alias Model =
     { status : Status
     , key : Browser.Navigation.Key
     , route : Route
+    , data : Data
     }
 
 
-init : () -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
-init () url key =
-    ( Model Loading key (Maybe.withDefault Route.top (parseUrlAsRoute url))
+type alias DecodableFlags =
+    { count : Json.Decode.Value
+    }
+
+
+type alias Flags =
+    { value : Int
+    }
+
+
+init : DecodableFlags -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
+init flags url key =
+    ( Model Loading key (Maybe.withDefault Route.top (parseUrlAsRoute url)) (Data (Result.withDefault (Flags 1) (decoder flags.count)).value)
     , Cmd.none
     )
 
 
-main : Program () Model Msg
+decodeFlags : Json.Decode.Decoder Flags
+decodeFlags =
+    Json.Decode.map Flags (Json.Decode.field "value" Json.Decode.int)
+
+
+decoder : Json.Decode.Value -> Result Json.Decode.Error Flags
+decoder =
+    Json.Decode.decodeValue decodeFlags
+
+
+main : Program DecodableFlags Model Msg
 main =
     Browser.application
         { init = init
@@ -127,6 +154,7 @@ view model =
                                     [ div
                                         []
                                         [ text "main"
+                                        , text (String.fromInt model.data.count)
                                         ]
                                     ]
 
