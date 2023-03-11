@@ -165,13 +165,14 @@ view model =
                                 Route.Top _ ->
                                     [ div
                                         []
-                                        ([ text "main"
-                                         , text (String.fromInt model.data.count)
-                                         ]
-                                            ++ (Color.displayModeSet
-                                                    |> List.map
-                                                        (\mode -> button [ onClick (ModeChanged mode) ] [ text (Color.toString mode) ])
-                                               )
+                                        (List.concat
+                                            [ [ text "main"
+                                              , text (String.fromInt model.data.count)
+                                              ]
+                                            , Color.displayModeSet
+                                                |> List.map
+                                                    (\mode -> button [ onClick (ModeChanged mode) ] [ text (Color.toString mode) ])
+                                            ]
                                         )
                                     ]
 
