@@ -1,4 +1,4 @@
-module Main exposing (Status(..), view)
+module Main exposing (Model, Msg(..), Status(..), handleUrlChange, init, subscriptions, update, view)
 
 import Browser exposing (Document)
 import Browser.Navigation
@@ -9,6 +9,7 @@ import Css.Reset
 import Html.Styled exposing (a, button, div, h1, header, li, nav, p, text, ul)
 import Html.Styled.Attributes exposing (href)
 import Html.Styled.Events exposing (onClick)
+import Json.Decode
 import Route exposing (Route)
 import Url
 import Url.Parser exposing (Parser)
@@ -25,31 +26,57 @@ type Status
     | Loading
 
 
+type alias Data =
+    { count : Int
+    }
+
+
 type alias Model =
     { status : Status
     , key : Browser.Navigation.Key
     , route : Route
+    , data : Data
     , mode : Color.DisplayMode
     }
 
 
-initialModel : Url.Url -> Browser.Navigation.Key -> Model
-initialModel url key =
-    { status = Loading
-    , key = key
-    , route = Maybe.withDefault Route.top (parseUrlAsRoute url)
-    , mode = Color.Default
+type alias Flags =
+    { count : Count
     }
 
 
-init : () -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
-init () url key =
-    ( initialModel url key
+type alias Count =
+    { value : Int
+    }
+
+
+init : Json.Decode.Value -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
+init flags url key =
+    ( Model Loading
+        key
+        (Maybe.withDefault Route.top (parseUrlAsRoute url))
+        (Data (Result.withDefault 10 (decoder flags |> Result.map (\result -> result.count.value))))
+        Color.Default
     , Cmd.none
     )
 
 
-main : Program () Model Msg
+decodeFlags : Json.Decode.Decoder Flags
+decodeFlags =
+    Json.Decode.map Flags decodeCount
+
+
+decodeCount : Json.Decode.Decoder Count
+decodeCount =
+    Json.Decode.map Count (Json.Decode.field "value" Json.Decode.int)
+
+
+decoder : Json.Decode.Value -> Result Json.Decode.Error Flags
+decoder =
+    Json.Decode.decodeValue decodeFlags
+
+
+main : Program Json.Decode.Value Model Msg
 main =
     Browser.application
         { init = init
@@ -147,7 +174,15 @@ view model =
                                 Route.Top _ ->
                                     [ div
                                         []
-                                        (text "main" :: (Color.displayModeSet |> List.map (\mode -> button [ onClick (ModeChanged mode) ] [ text (Color.toString mode) ])))
+                                        (List.concat
+                                            [ [ text "main"
+                                              , text (String.fromInt model.data.count)
+                                              ]
+                                            , Color.displayModeSet
+                                                |> List.map
+                                                    (\mode -> button [ onClick (ModeChanged mode) ] [ text (Color.toString mode) ])
+                                            ]
+                                        )
                                     ]
 
                                 Route.History _ ->

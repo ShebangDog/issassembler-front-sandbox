@@ -18,5 +18,7 @@ jobs:
           script: |
             cd ${{ secrets.APP_CODE_PATH }}
             git pull origin main
-            elm make src/Main.elm
-            yes | cp index.html ${{ secrets.DEPLOY_SOURCE_PATH }}
+            elm make src/Main.elm --output=$filename
+            yes | cp $filename ${{ secrets.DEPLOY_SOURCE_PATH }}
+        env: 
+          filename: "main.js"
