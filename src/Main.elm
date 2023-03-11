@@ -1,4 +1,4 @@
-module Main exposing (Status(..), view)
+module Main exposing (Model, Msg(..), Status(..), handleUrlChange, init, subscriptions, update, view)
 
 import Browser exposing (Document)
 import Browser.Navigation
@@ -40,26 +40,35 @@ type alias Model =
     }
 
 
-type alias DecodableFlags =
-    { count : Json.Decode.Value
+type alias Flags =
+    { count : Count
     }
 
 
-type alias Flags =
+type alias Count =
     { value : Int
     }
 
 
-init : DecodableFlags -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
+init : Json.Decode.Value -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model Loading key (Maybe.withDefault Route.top (parseUrlAsRoute url)) (Data (Result.withDefault (Flags 1) (decoder flags.count)).value) Color.Default
+    ( Model Loading
+        key
+        (Maybe.withDefault Route.top (parseUrlAsRoute url))
+        (Data (Result.withDefault 10 (decoder flags |> Result.map (\result -> result.count.value))))
+        Color.Default
     , Cmd.none
     )
 
 
 decodeFlags : Json.Decode.Decoder Flags
 decodeFlags =
-    Json.Decode.map Flags (Json.Decode.field "value" Json.Decode.int)
+    Json.Decode.map Flags decodeCount
+
+
+decodeCount : Json.Decode.Decoder Count
+decodeCount =
+    Json.Decode.map Count (Json.Decode.field "value" Json.Decode.int)
 
 
 decoder : Json.Decode.Value -> Result Json.Decode.Error Flags
@@ -67,7 +76,7 @@ decoder =
     Json.Decode.decodeValue decodeFlags
 
 
-main : Program DecodableFlags Model Msg
+main : Program Json.Decode.Value Model Msg
 main =
     Browser.application
         { init = init
