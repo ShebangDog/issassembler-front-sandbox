@@ -8,6 +8,13 @@
 <body>
   <div id="myapp"></div>
   <script>
+  
+  const displayMode = {
+    DEFAULT: "default",
+    DARK: "dark",
+    LIGHT: "light",
+  }
+
   const app = Elm.Main.init({
     node: document.getElementById('myapp'),
         flags: {
