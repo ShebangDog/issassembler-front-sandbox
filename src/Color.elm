@@ -1,4 +1,4 @@
-module Color exposing (DisplayMode(..), defaultTheme, displayModeSet, palette, theme, toString)
+module Color exposing (DisplayMode(..), defaultTheme, displayModeSet, fromString, palette, theme, toString)
 
 import Css
 
@@ -64,6 +64,13 @@ displayModeSet =
     , Light
     , Dark
     ]
+
+
+fromString : String -> Maybe DisplayMode
+fromString displayMode =
+    displayModeSet
+        |> List.filter (\mode -> toString mode == displayMode)
+        |> List.head
 
 
 toString : DisplayMode -> String
