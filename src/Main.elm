@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), Status(..), handleUrlChange, init, subscriptions, update, view)
+port module Main exposing (Model, Msg(..), Status(..), handleUrlChange, init, subscriptions, update, view)
 
 import Browser exposing (Document)
 import Browser.Navigation
@@ -10,6 +10,7 @@ import Html.Styled exposing (a, button, div, h1, header, li, nav, p, text, ul)
 import Html.Styled.Attributes exposing (href)
 import Html.Styled.Events exposing (onClick)
 import Json.Decode
+import Json.Encode
 import Route exposing (Route)
 import Url
 import Url.Parser exposing (Parser)
@@ -19,6 +20,7 @@ type Msg
     = LinkClicked Browser.UrlRequest
     | UrlChanged Route
     | ModeChanged Color.DisplayMode
+    | Receive ( Json.Encode.Value, Json.Encode.Value )
 
 
 type Status
@@ -140,7 +142,12 @@ update msg model =
             ( { model | route = route }, Cmd.none )
 
         ModeChanged mode ->
-            ( { model | mode = mode }, Cmd.none )
+            ( { model | mode = mode }, storeToStorage ( "mode", Json.Encode.string (Color.toString mode) ) )
+
+        Receive ( _, newValue ) ->
+            ( { model | mode = Result.withDefault model.mode (Json.Decode.decodeValue decodeDisplayMode newValue) }
+            , Cmd.none
+            )
 
 
 navigationRoute : List Route
@@ -176,6 +183,12 @@ navigationBar routeList currentRoute =
                 ]
             ]
         ]
+
+
+port storeToStorage : ( String, Json.Encode.Value ) -> Cmd msg
+
+
+port storageReceiver : (( Json.Decode.Value, Json.Decode.Value ) -> msg) -> Sub msg
 
 
 view : Model -> Document Msg
@@ -225,6 +238,6 @@ transition route =
     href ("/" ++ Route.toString route)
 
 
-subscriptions : Model -> Sub msg
+subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    storageReceiver Receive
