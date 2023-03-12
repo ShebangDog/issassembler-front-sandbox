@@ -24,6 +24,17 @@
             displayMode: displayMode["DEFAULT"]
         },
   });
+
+  const storage = window.localStorage
+
+  app.ports.storeToStorage.subscribe(function ([key, data]) {
+    storage.setItem(key, data)
+  });
+
+  window.onstorage = (event) => {
+    app.ports.storageReceiver.send([event.key, event.newValue])
+  };
+
   </script>
 </body>
 </html>
