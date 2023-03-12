@@ -42,6 +42,7 @@ type alias Model =
 
 type alias Flags =
     { count : Count
+    , displayMode : Color.DisplayMode
     }
 
 
@@ -56,14 +57,32 @@ init flags url key =
         key
         (Maybe.withDefault Route.top (parseUrlAsRoute url))
         (Data (Result.withDefault 10 (decoder flags |> Result.map (\result -> result.count.value))))
-        Color.Default
+        (Result.withDefault Color.Default (decoder flags |> Result.map (\result -> result.displayMode)))
     , Cmd.none
     )
 
 
 decodeFlags : Json.Decode.Decoder Flags
 decodeFlags =
-    Json.Decode.map Flags decodeCount
+    Json.Decode.map2 Flags
+        (Json.Decode.field "count" decodeCount)
+        (Json.Decode.field "displayMode" decodeDisplayMode)
+
+
+decodeDisplayMode : Json.Decode.Decoder Color.DisplayMode
+decodeDisplayMode =
+    Json.Decode.string
+        |> Json.Decode.andThen
+            (\value ->
+                case
+                    Color.fromString value
+                of
+                    Just head ->
+                        Json.Decode.succeed head
+
+                    Nothing ->
+                        Json.Decode.fail value
+            )
 
 
 decodeCount : Json.Decode.Decoder Count
