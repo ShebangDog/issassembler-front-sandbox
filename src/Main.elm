@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), Status(..), handleUrlChange, init, subscriptions, update, view)
+port module Main exposing (Model, Msg(..), Status(..), handleUrlChange, init, subscriptions, update, view)
 
 import Browser exposing (Document)
 import Browser.Navigation
@@ -10,6 +10,8 @@ import Html.Styled exposing (a, button, div, h1, header, li, nav, p, text, ul)
 import Html.Styled.Attributes exposing (href)
 import Html.Styled.Events exposing (onClick)
 import Json.Decode
+import Json.Encode
+import Monocle.Lens exposing (Lens)
 import Route exposing (Route)
 import Url
 import Url.Parser exposing (Parser)
@@ -19,6 +21,7 @@ type Msg
     = LinkClicked Browser.UrlRequest
     | UrlChanged Route
     | ModeChanged Color.DisplayMode
+    | Receive ( Json.Encode.Value, Json.Encode.Value )
 
 
 type Status
@@ -40,8 +43,13 @@ type alias Model =
     }
 
 
+
+-- Flags
+
+
 type alias Flags =
     { count : Count
+    , displayMode : Color.DisplayMode
     }
 
 
@@ -50,20 +58,63 @@ type alias Count =
     }
 
 
-init : Json.Decode.Value -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
-init flags url key =
-    ( Model Loading
-        key
-        (Maybe.withDefault Route.top (parseUrlAsRoute url))
-        (Data (Result.withDefault 10 (decoder flags |> Result.map (\result -> result.count.value))))
-        Color.Default
-    , Cmd.none
-    )
+countOfFlags : Lens { a | count : b } b
+countOfFlags =
+    let
+        get flags =
+            flags.count
+
+        set count flags =
+            { flags | count = count }
+    in
+    Lens get set
+
+
+valueOfCount : Lens { a | value : b } b
+valueOfCount =
+    let
+        get count =
+            count.value
+
+        set value count =
+            { count | value = value }
+    in
+    Lens get set
+
+
+displayModeOfFlags : Lens { a | displayMode : b } b
+displayModeOfFlags =
+    let
+        get flags =
+            flags.displayMode
+
+        set displayMode flags =
+            { flags | displayMode = displayMode }
+    in
+    Lens get set
 
 
 decodeFlags : Json.Decode.Decoder Flags
 decodeFlags =
-    Json.Decode.map Flags decodeCount
+    Json.Decode.map2 Flags
+        (Json.Decode.field "count" decodeCount)
+        (Json.Decode.field "displayMode" decodeDisplayMode)
+
+
+decodeDisplayMode : Json.Decode.Decoder Color.DisplayMode
+decodeDisplayMode =
+    Json.Decode.string
+        |> Json.Decode.andThen
+            (\value ->
+                case
+                    Color.fromString value
+                of
+                    Just head ->
+                        Json.Decode.succeed head
+
+                    Nothing ->
+                        Json.Decode.fail value
+            )
 
 
 decodeCount : Json.Decode.Decoder Count
@@ -74,6 +125,24 @@ decodeCount =
 decoder : Json.Decode.Value -> Result Json.Decode.Error Flags
 decoder =
     Json.Decode.decodeValue decodeFlags
+
+
+init : Json.Decode.Value -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
+init flags url key =
+    let
+        decodedFlags =
+            decoder flags
+
+        valueOfFlags =
+            Monocle.Lens.compose countOfFlags valueOfCount
+    in
+    ( Model Loading
+        key
+        (Maybe.withDefault Route.top (parseUrlAsRoute url))
+        (Data (Result.withDefault 10 (Result.map valueOfFlags.get decodedFlags)))
+        (Result.withDefault Color.Default (Result.map displayModeOfFlags.get decodedFlags))
+    , Cmd.none
+    )
 
 
 main : Program Json.Decode.Value Model Msg
@@ -121,7 +190,12 @@ update msg model =
             ( { model | route = route }, Cmd.none )
 
         ModeChanged mode ->
-            ( { model | mode = mode }, Cmd.none )
+            ( { model | mode = mode }, storeToStorage ( "mode", Json.Encode.string (Color.toString mode) ) )
+
+        Receive ( _, newValue ) ->
+            ( { model | mode = Result.withDefault model.mode (Json.Decode.decodeValue decodeDisplayMode newValue) }
+            , Cmd.none
+            )
 
 
 navigationRoute : List Route
@@ -157,6 +231,12 @@ navigationBar routeList currentRoute =
                 ]
             ]
         ]
+
+
+port storeToStorage : ( String, Json.Encode.Value ) -> Cmd msg
+
+
+port storageReceiver : (( Json.Decode.Value, Json.Decode.Value ) -> msg) -> Sub msg
 
 
 view : Model -> Document Msg
@@ -206,6 +286,6 @@ transition route =
     href ("/" ++ Route.toString route)
 
 
-subscriptions : Model -> Sub msg
+subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    storageReceiver Receive
