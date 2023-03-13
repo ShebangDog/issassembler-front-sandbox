@@ -92,11 +92,18 @@ displayModeOfFlags =
 
 init : Json.Decode.Value -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
 init flags url key =
+    let
+        decodedFlags =
+            decoder flags
+
+        valueOfFlags =
+            Monocle.Lens.compose countOfFlags valueOfCount
+    in
     ( Model Loading
         key
         (Maybe.withDefault Route.top (parseUrlAsRoute url))
-        (Data (Result.withDefault 10 (decoder flags |> Result.map (\result -> result.count.value))))
-        (Result.withDefault Color.Default (decoder flags |> Result.map (\result -> result.displayMode)))
+        (Data (Result.withDefault 10 (Result.map valueOfFlags.get decodedFlags)))
+        (Result.withDefault Color.Default (Result.map displayModeOfFlags.get decodedFlags))
     , Cmd.none
     )
 
