@@ -11,6 +11,7 @@ import Html.Styled.Attributes exposing (href)
 import Html.Styled.Events exposing (onClick)
 import Json.Decode
 import Json.Encode
+import Monocle.Lens exposing (Lens)
 import Route exposing (Route)
 import Url
 import Url.Parser exposing (Parser)
@@ -51,6 +52,42 @@ type alias Flags =
 type alias Count =
     { value : Int
     }
+
+
+countOfFlags : Lens { a | count : b } b
+countOfFlags =
+    let
+        get flags =
+            flags.count
+
+        set count flags =
+            { flags | count = count }
+    in
+    Lens get set
+
+
+valueOfCount : Lens { a | value : b } b
+valueOfCount =
+    let
+        get count =
+            count.value
+
+        set value count =
+            { count | value = value }
+    in
+    Lens get set
+
+
+displayModeOfFlags : Lens { a | displayMode : b } b
+displayModeOfFlags =
+    let
+        get flags =
+            flags.displayMode
+
+        set displayMode flags =
+            { flags | displayMode = displayMode }
+    in
+    Lens get set
 
 
 init : Json.Decode.Value -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
