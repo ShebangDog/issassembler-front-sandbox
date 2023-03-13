@@ -43,6 +43,10 @@ type alias Model =
     }
 
 
+
+-- Flags
+
+
 type alias Flags =
     { count : Count
     , displayMode : Color.DisplayMode
@@ -90,24 +94,6 @@ displayModeOfFlags =
     Lens get set
 
 
-init : Json.Decode.Value -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
-init flags url key =
-    let
-        decodedFlags =
-            decoder flags
-
-        valueOfFlags =
-            Monocle.Lens.compose countOfFlags valueOfCount
-    in
-    ( Model Loading
-        key
-        (Maybe.withDefault Route.top (parseUrlAsRoute url))
-        (Data (Result.withDefault 10 (Result.map valueOfFlags.get decodedFlags)))
-        (Result.withDefault Color.Default (Result.map displayModeOfFlags.get decodedFlags))
-    , Cmd.none
-    )
-
-
 decodeFlags : Json.Decode.Decoder Flags
 decodeFlags =
     Json.Decode.map2 Flags
@@ -139,6 +125,24 @@ decodeCount =
 decoder : Json.Decode.Value -> Result Json.Decode.Error Flags
 decoder =
     Json.Decode.decodeValue decodeFlags
+
+
+init : Json.Decode.Value -> Url.Url -> Browser.Navigation.Key -> ( Model, Cmd Msg )
+init flags url key =
+    let
+        decodedFlags =
+            decoder flags
+
+        valueOfFlags =
+            Monocle.Lens.compose countOfFlags valueOfCount
+    in
+    ( Model Loading
+        key
+        (Maybe.withDefault Route.top (parseUrlAsRoute url))
+        (Data (Result.withDefault 10 (Result.map valueOfFlags.get decodedFlags)))
+        (Result.withDefault Color.Default (Result.map displayModeOfFlags.get decodedFlags))
+    , Cmd.none
+    )
 
 
 main : Program Json.Decode.Value Model Msg
