@@ -154,7 +154,12 @@ parseUrlAsRoute url =
 
 handleUrlChange : Url.Url -> Msg
 handleUrlChange url =
-    UrlChanged (Maybe.withDefault Route.top (parseUrlAsRoute url))
+    let
+        route =
+            parseUrlAsRoute url
+    in
+    UrlChanged
+        (Maybe.withDefault Route.top route)
 
 
 routeParser : Parser (Route -> Route) Route
@@ -163,8 +168,7 @@ routeParser =
         parseRoute route =
             Url.Parser.map route (Url.Parser.s (Route.toString route))
     in
-    Url.Parser.oneOf
-        (Route.routeSet |> List.map parseRoute)
+    Url.Parser.oneOf (List.map parseRoute Route.routeSet)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -190,6 +194,22 @@ update msg model =
             )
 
 
+navigationItem : Route -> Route -> Html.Styled.Html Msg
+navigationItem selectedItem route =
+    let
+        content =
+            text <| Route.toString route
+
+        element =
+            if route == selectedItem then
+                p [] [ content ]
+
+            else
+                a [ transition route ] [ content ]
+    in
+    li [] [ element ]
+
+
 navigationBar : List Route -> Route -> Html.Styled.Html Msg
 navigationBar routeList currentRoute =
     header
@@ -197,24 +217,9 @@ navigationBar routeList currentRoute =
         [ h1 [] [ text title ]
         , div []
             [ nav []
-                [ ul []
-                    (routeList
-                        |> List.map
-                            (\route ->
-                                let
-                                    content =
-                                        text <| Route.toString route
-
-                                    element =
-                                        if route == currentRoute then
-                                            p [] [ content ]
-
-                                        else
-                                            a [ transition route ] [ content ]
-                                in
-                                li [] [ element ]
-                            )
-                    )
+                [ ul
+                    []
+                    (List.map (navigationItem currentRoute) routeList)
                 ]
             ]
         ]
