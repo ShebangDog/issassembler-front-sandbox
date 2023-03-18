@@ -135,12 +135,17 @@ init flags url key =
 
         valueOfFlags =
             Monocle.Lens.compose countOfFlags valueOfCount
+
+        route =
+            Maybe.withDefault Route.top (parseUrlAsRoute url)
+
+        data =
+            Data (Result.withDefault 10 (Result.map valueOfFlags.get decodedFlags))
+
+        color =
+            Result.withDefault Color.Default (Result.map displayModeOfFlags.get decodedFlags)
     in
-    ( Model Loading
-        key
-        (Maybe.withDefault Route.top (parseUrlAsRoute url))
-        (Data (Result.withDefault 10 (Result.map valueOfFlags.get decodedFlags)))
-        (Result.withDefault Color.Default (Result.map displayModeOfFlags.get decodedFlags))
+    ( Model Loading key route data color
     , Cmd.none
     )
 
@@ -248,31 +253,28 @@ view model =
     { title = title
     , body =
         List.map Html.Styled.toUnstyled <|
-            Css.Global.global (Css.Global.body [ Css.backgroundColor theme.primary ] :: Css.Reset.ericMeyer)
-                :: (navigationBar navigationRoute model.route
-                        :: (case model.route of
-                                Route.Top _ ->
-                                    [ div
-                                        []
-                                        (List.concat
-                                            [ [ text "main"
-                                              , text (String.fromInt model.data.count)
-                                              ]
-                                            , Color.displayModeSet
-                                                |> List.map
-                                                    (\mode -> button [ onClick (ModeChanged mode) ] [ text (Color.toString mode) ])
-                                            ]
-                                        )
-                                    ]
+            [ Css.Global.global (Css.Global.body [ Css.backgroundColor theme.primary ] :: Css.Reset.ericMeyer)
+            , navigationBar navigationRoute model.route
+            , case model.route of
+                Route.Top _ ->
+                    div
+                        []
+                        (List.concat
+                            [ [ text "main"
+                              , text (String.fromInt model.data.count)
+                              ]
+                            , Color.displayModeSet
+                                |> List.map
+                                    (\mode -> button [ onClick (ModeChanged mode) ] [ text (Color.toString mode) ])
+                            ]
+                        )
 
-                                Route.History _ ->
-                                    [ div
-                                        []
-                                        [ text "history"
-                                        ]
-                                    ]
-                           )
-                   )
+                Route.History _ ->
+                    div
+                        []
+                        [ text "history"
+                        ]
+            ]
     }
 
 
