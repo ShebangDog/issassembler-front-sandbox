@@ -174,10 +174,12 @@ handleUrlChange url =
 
 routeParser : Parser (Route -> Route) Route
 routeParser =
+    let
+        parseRoute route =
+            Url.Parser.map route (Url.Parser.s (Route.toString route))
+    in
     Url.Parser.oneOf
-        ([ Route.top, Route.history ]
-            |> List.map (\route -> Url.Parser.map route (Url.Parser.s (Route.toString route)))
-        )
+        (Route.routeSet |> List.map parseRoute)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -201,11 +203,6 @@ update msg model =
             ( { model | mode = Result.withDefault model.mode (Json.Decode.decodeValue decodeDisplayMode newValue) }
             , Cmd.none
             )
-
-
-navigationRoute : List Route
-navigationRoute =
-    [ Route.top, Route.history ]
 
 
 navigationBar : List Route -> Route -> Html.Styled.Html Msg
@@ -254,7 +251,7 @@ view model =
     , body =
         List.map Html.Styled.toUnstyled <|
             [ Css.Global.global (Css.Global.body [ Css.backgroundColor theme.primary ] :: Css.Reset.ericMeyer)
-            , navigationBar navigationRoute model.route
+            , navigationBar Route.routeSet model.route
             , case model.route of
                 Route.Top _ ->
                     div
