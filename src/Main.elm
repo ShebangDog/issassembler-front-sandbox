@@ -1,4 +1,4 @@
-port module Main exposing (Model, Msg(..), Status(..), handleUrlChange, init, subscriptions, update, view)
+port module Main exposing (Model, Msg(..), Status(..), handleUrlChange, init, subscriptions, transition, update, view)
 
 import Browser exposing (Document)
 import Browser.Navigation
@@ -6,12 +6,13 @@ import Color
 import Css
 import Css.Global
 import Css.Reset
-import Html.Styled exposing (a, button, div, h1, header, li, nav, p, text, ul)
+import Html.Styled exposing (a, button, div, text)
 import Html.Styled.Attributes exposing (href)
 import Html.Styled.Events exposing (onClick)
 import Json.Decode
 import Json.Encode
 import Monocle.Lens exposing (Lens)
+import NavigationBar
 import Route exposing (Route)
 import Url
 import Url.Parser exposing (Parser)
@@ -48,13 +49,8 @@ type alias Model =
 
 
 type alias Flags =
-    { count : Count
+    { count : Data
     , displayMode : Color.DisplayMode
-    }
-
-
-type alias Count =
-    { value : Int
     }
 
 
@@ -66,18 +62,6 @@ countOfFlags =
 
         set count flags =
             { flags | count = count }
-    in
-    Lens get set
-
-
-valueOfCount : Lens { a | value : b } b
-valueOfCount =
-    let
-        get count =
-            count.value
-
-        set value count =
-            { count | value = value }
     in
     Lens get set
 
@@ -97,29 +81,29 @@ displayModeOfFlags =
 decodeFlags : Json.Decode.Decoder Flags
 decodeFlags =
     Json.Decode.map2 Flags
-        (Json.Decode.field "count" decodeCount)
+        (Json.Decode.field "count" decodeData)
         (Json.Decode.field "displayMode" decodeDisplayMode)
 
 
 decodeDisplayMode : Json.Decode.Decoder Color.DisplayMode
 decodeDisplayMode =
-    Json.Decode.string
-        |> Json.Decode.andThen
-            (\value ->
-                case
-                    Color.fromString value
-                of
-                    Just head ->
-                        Json.Decode.succeed head
-
-                    Nothing ->
-                        Json.Decode.fail value
-            )
+    let
+        decodeStringAsDispalyMode value =
+            Color.fromString value
+                |> Maybe.map Json.Decode.succeed
+                |> Maybe.withDefault (Json.Decode.fail value)
+    in
+    Json.Decode.andThen decodeStringAsDispalyMode Json.Decode.string
 
 
-decodeCount : Json.Decode.Decoder Count
-decodeCount =
-    Json.Decode.map Count (Json.Decode.field "value" Json.Decode.int)
+decodeValue : Json.Decode.Decoder Int
+decodeValue =
+    Json.Decode.field "value" Json.Decode.int
+
+
+decodeData : Json.Decode.Decoder Data
+decodeData =
+    Json.Decode.map Data decodeValue
 
 
 decoder : Json.Decode.Value -> Result Json.Decode.Error Flags
@@ -133,14 +117,21 @@ init flags url key =
         decodedFlags =
             decoder flags
 
-        valueOfFlags =
-            Monocle.Lens.compose countOfFlags valueOfCount
+        maybeRoute =
+            parseUrlAsRoute url
+
+        dataResult =
+            Result.map countOfFlags.get decodedFlags
+
+        colorResult =
+            Result.map displayModeOfFlags.get decodedFlags
     in
-    ( Model Loading
+    ( Model
+        Loading
         key
-        (Maybe.withDefault Route.top (parseUrlAsRoute url))
-        (Data (Result.withDefault 10 (Result.map valueOfFlags.get decodedFlags)))
-        (Result.withDefault Color.Default (Result.map displayModeOfFlags.get decodedFlags))
+        (Maybe.withDefault Route.top maybeRoute)
+        (Result.withDefault (Data 10) dataResult)
+        (Result.withDefault Color.Default colorResult)
     , Cmd.none
     )
 
@@ -164,15 +155,24 @@ parseUrlAsRoute url =
 
 handleUrlChange : Url.Url -> Msg
 handleUrlChange url =
-    UrlChanged (Maybe.withDefault Route.top (parseUrlAsRoute url))
+    let
+        route =
+            parseUrlAsRoute url
+    in
+    UrlChanged
+        (Maybe.withDefault Route.top route)
 
 
 routeParser : Parser (Route -> Route) Route
 routeParser =
-    Url.Parser.oneOf
-        ([ Route.top, Route.history ]
-            |> List.map (\route -> Url.Parser.map route (Url.Parser.s (Route.toString route)))
-        )
+    let
+        parserTuple route =
+            ( route, Route.toString route )
+
+        parseRoute ( route, routeTag ) =
+            Url.Parser.map route (Url.Parser.s routeTag)
+    in
+    Url.Parser.oneOf (List.map (parserTuple >> parseRoute) Route.routeSet)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -198,41 +198,6 @@ update msg model =
             )
 
 
-navigationRoute : List Route
-navigationRoute =
-    [ Route.top, Route.history ]
-
-
-navigationBar : List Route -> Route -> Html.Styled.Html Msg
-navigationBar routeList currentRoute =
-    header
-        []
-        [ h1 [] [ text title ]
-        , div []
-            [ nav []
-                [ ul []
-                    (routeList
-                        |> List.map
-                            (\route ->
-                                let
-                                    content =
-                                        text <| Route.toString route
-
-                                    element =
-                                        if route == currentRoute then
-                                            p [] [ content ]
-
-                                        else
-                                            a [ transition route ] [ content ]
-                                in
-                                li [] [ element ]
-                            )
-                    )
-                ]
-            ]
-        ]
-
-
 port storeToStorage : ( String, Json.Encode.Value ) -> Cmd msg
 
 
@@ -248,31 +213,28 @@ view model =
     { title = title
     , body =
         List.map Html.Styled.toUnstyled <|
-            Css.Global.global (Css.Global.body [ Css.backgroundColor theme.primary ] :: Css.Reset.ericMeyer)
-                :: (navigationBar navigationRoute model.route
-                        :: (case model.route of
-                                Route.Top _ ->
-                                    [ div
-                                        []
-                                        (List.concat
-                                            [ [ text "main"
-                                              , text (String.fromInt model.data.count)
-                                              ]
-                                            , Color.displayModeSet
-                                                |> List.map
-                                                    (\mode -> button [ onClick (ModeChanged mode) ] [ text (Color.toString mode) ])
-                                            ]
-                                        )
-                                    ]
+            [ Css.Global.global (Css.Global.body [ Css.backgroundColor theme.primary ] :: Css.Reset.ericMeyer)
+            , NavigationBar.view title Route.routeSet model.route transition
+            , case model.route of
+                Route.Top _ ->
+                    div
+                        []
+                        (List.concat
+                            [ [ text "main"
+                              , text (String.fromInt model.data.count)
+                              ]
+                            , Color.displayModeSet
+                                |> List.map
+                                    (\mode -> button [ onClick (ModeChanged mode) ] [ text (Color.toString mode) ])
+                            ]
+                        )
 
-                                Route.History _ ->
-                                    [ div
-                                        []
-                                        [ text "history"
-                                        ]
-                                    ]
-                           )
-                   )
+                Route.History _ ->
+                    div
+                        []
+                        [ text "history"
+                        ]
+            ]
     }
 
 
@@ -281,7 +243,7 @@ title =
     "Issassembler"
 
 
-transition : Route -> Html.Styled.Attribute Msg
+transition : Route -> Html.Styled.Attribute msg
 transition route =
     href ("/" ++ Route.toString route)
 

@@ -1,4 +1,4 @@
-module Route exposing (Route(..), history, suite, toHistory, toString, toTop, top)
+module Route exposing (Route(..), history, routeSet, suite, toHistory, toString, toTop, top)
 
 import Expect
 import Test exposing (Test, describe, test)
@@ -23,6 +23,11 @@ type Route
             { top : Allowed
             }
         )
+
+
+routeSet : List Route
+routeSet =
+    [ top, history ]
 
 
 toString : Route -> String
