@@ -1,4 +1,4 @@
-port module Main exposing (Model, Msg(..), Status(..), handleUrlChange, init, subscriptions, update, view)
+port module Main exposing (Model, Msg(..), Status(..), handleUrlChange, init, subscriptions, transition, update, view)
 
 import Browser exposing (Document)
 import Browser.Navigation
@@ -6,12 +6,13 @@ import Color
 import Css
 import Css.Global
 import Css.Reset
-import Html.Styled exposing (a, button, div, h1, header, li, nav, p, text, ul)
+import Html.Styled exposing (a, button, div, text)
 import Html.Styled.Attributes exposing (href)
 import Html.Styled.Events exposing (onClick)
 import Json.Decode
 import Json.Encode
 import Monocle.Lens exposing (Lens)
+import NavigationBar
 import Route exposing (Route)
 import Url
 import Url.Parser exposing (Parser)
@@ -197,37 +198,6 @@ update msg model =
             )
 
 
-navigationItem : Route -> Route -> Html.Styled.Html Msg
-navigationItem selectedItem route =
-    let
-        content =
-            text (Route.toString route)
-
-        element =
-            if route == selectedItem then
-                p [] [ content ]
-
-            else
-                a [ transition route ] [ content ]
-    in
-    li [] [ element ]
-
-
-navigationBar : List Route -> Route -> Html.Styled.Html Msg
-navigationBar routeList currentRoute =
-    header
-        []
-        [ h1 [] [ text title ]
-        , div []
-            [ nav []
-                [ ul
-                    []
-                    (List.map (navigationItem currentRoute) routeList)
-                ]
-            ]
-        ]
-
-
 port storeToStorage : ( String, Json.Encode.Value ) -> Cmd msg
 
 
@@ -244,7 +214,7 @@ view model =
     , body =
         List.map Html.Styled.toUnstyled <|
             [ Css.Global.global (Css.Global.body [ Css.backgroundColor theme.primary ] :: Css.Reset.ericMeyer)
-            , navigationBar Route.routeSet model.route
+            , NavigationBar.view title Route.routeSet model.route transition
             , case model.route of
                 Route.Top _ ->
                     div
@@ -273,7 +243,7 @@ title =
     "Issassembler"
 
 
-transition : Route -> Html.Styled.Attribute Msg
+transition : Route -> Html.Styled.Attribute msg
 transition route =
     href ("/" ++ Route.toString route)
 
