@@ -103,18 +103,13 @@ decodeFlags =
 
 decodeDisplayMode : Json.Decode.Decoder Color.DisplayMode
 decodeDisplayMode =
-    Json.Decode.string
-        |> Json.Decode.andThen
-            (\value ->
-                case
-                    Color.fromString value
-                of
-                    Just head ->
-                        Json.Decode.succeed head
-
-                    Nothing ->
-                        Json.Decode.fail value
-            )
+    let
+        decodeStringAsDispalyMode value =
+            Color.fromString value
+                |> Maybe.map Json.Decode.succeed
+                |> Maybe.withDefault (Json.Decode.fail value)
+    in
+    Json.Decode.andThen decodeStringAsDispalyMode Json.Decode.string
 
 
 decodeCount : Json.Decode.Decoder Count
