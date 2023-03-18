@@ -213,7 +213,12 @@ view model =
     { title = title
     , body =
         List.map Html.Styled.toUnstyled <|
-            [ Css.Global.global (Css.Global.body [ Css.backgroundColor theme.primary ] :: Css.Reset.ericMeyer)
+            [ Css.Global.global
+                (List.concat
+                    [ [ Css.Global.body [ Css.backgroundColor theme.primary ] ]
+                    , Css.Reset.ericMeyer
+                    ]
+                )
             , NavigationBar.view title Route.routeSet model.route transition
             , case model.route of
                 Route.Top _ ->
