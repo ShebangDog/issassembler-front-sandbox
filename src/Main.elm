@@ -201,7 +201,7 @@ navigationItem : Route -> Route -> Html.Styled.Html Msg
 navigationItem selectedItem route =
     let
         content =
-            text <| Route.toString route
+            text (Route.toString route)
 
         element =
             if route == selectedItem then
