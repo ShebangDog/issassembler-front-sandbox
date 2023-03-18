@@ -165,10 +165,13 @@ handleUrlChange url =
 routeParser : Parser (Route -> Route) Route
 routeParser =
     let
-        parseRoute route =
-            Url.Parser.map route (Url.Parser.s (Route.toString route))
+        parserTuple route =
+            ( route, Route.toString route )
+
+        parseRoute ( route, routeTag ) =
+            Url.Parser.map route (Url.Parser.s routeTag)
     in
-    Url.Parser.oneOf (List.map parseRoute Route.routeSet)
+    Url.Parser.oneOf (List.map (parserTuple >> parseRoute) Route.routeSet)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
