@@ -48,13 +48,8 @@ type alias Model =
 
 
 type alias Flags =
-    { count : Count
+    { count : Data
     , displayMode : Color.DisplayMode
-    }
-
-
-type alias Count =
-    { value : Int
     }
 
 
@@ -66,18 +61,6 @@ countOfFlags =
 
         set count flags =
             { flags | count = count }
-    in
-    Lens get set
-
-
-valueOfCount : Lens { a | value : b } b
-valueOfCount =
-    let
-        get count =
-            count.value
-
-        set value count =
-            { count | value = value }
     in
     Lens get set
 
@@ -97,7 +80,7 @@ displayModeOfFlags =
 decodeFlags : Json.Decode.Decoder Flags
 decodeFlags =
     Json.Decode.map2 Flags
-        (Json.Decode.field "count" decodeCount)
+        (Json.Decode.field "count" decodeData)
         (Json.Decode.field "displayMode" decodeDisplayMode)
 
 
@@ -112,9 +95,14 @@ decodeDisplayMode =
     Json.Decode.andThen decodeStringAsDispalyMode Json.Decode.string
 
 
-decodeCount : Json.Decode.Decoder Count
-decodeCount =
-    Json.Decode.map Count (Json.Decode.field "value" Json.Decode.int)
+decodeValue : Json.Decode.Decoder Int
+decodeValue =
+    Json.Decode.field "value" Json.Decode.int
+
+
+decodeData : Json.Decode.Decoder Data
+decodeData =
+    Json.Decode.map Data decodeValue
 
 
 decoder : Json.Decode.Value -> Result Json.Decode.Error Flags
@@ -128,19 +116,21 @@ init flags url key =
         decodedFlags =
             decoder flags
 
-        valueOfFlags =
-            Monocle.Lens.compose countOfFlags valueOfCount
+        maybeRoute =
+            parseUrlAsRoute url
 
-        route =
-            Maybe.withDefault Route.top (parseUrlAsRoute url)
+        dataResult =
+            Result.map countOfFlags.get decodedFlags
 
-        data =
-            Data (Result.withDefault 10 (Result.map valueOfFlags.get decodedFlags))
-
-        color =
-            Result.withDefault Color.Default (Result.map displayModeOfFlags.get decodedFlags)
+        colorResult =
+            Result.map displayModeOfFlags.get decodedFlags
     in
-    ( Model Loading key route data color
+    ( Model
+        Loading
+        key
+        (Maybe.withDefault Route.top maybeRoute)
+        (Result.withDefault (Data 10) dataResult)
+        (Result.withDefault Color.Default colorResult)
     , Cmd.none
     )
 
