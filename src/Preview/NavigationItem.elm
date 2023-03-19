@@ -3,7 +3,7 @@ module Preview.NavigationItem exposing (..)
 import Browser
 import Css.Global
 import Css.Reset
-import Html.Styled exposing (Html, div, ul)
+import Html.Styled exposing (Html, ul)
 import Main exposing (transition)
 import NavigationItem
 import Route
