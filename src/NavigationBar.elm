@@ -33,6 +33,7 @@ view theme title routeList currentRoute transition =
                     [ css
                         [ Css.displayFlex
                         , Css.flexDirection Css.row
+                        , Css.property "gap" "16px"
                         , Css.marginTop (Css.px 16)
                         ]
                     ]
