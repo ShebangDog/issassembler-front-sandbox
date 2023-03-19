@@ -1,6 +1,7 @@
 module Preview.NavigationBar exposing (..)
 
 import Browser
+import Color
 import Css.Global
 import Css.Reset
 import Html.Styled exposing (div)
@@ -38,6 +39,7 @@ view _ =
         []
         [ Css.Global.global Css.Reset.ericMeyer
         , NavigationBar.view
+            Color.defaultTheme
             "title"
             Route.routeSet
             Route.top
