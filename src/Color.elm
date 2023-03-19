@@ -1,20 +1,24 @@
-module Color exposing (DisplayMode(..), defaultTheme, displayModeSet, fromString, palette, suite, theme, toString)
+module Color exposing (DisplayMode(..), Theme, defaultTheme, displayModeSet, fromString, palette, suite, theme, toString)
 
 import Css
 import Expect
 import Test exposing (Test, describe, test)
 
 
-palette : { turkishRose : Css.Color, apache : Css.Color, flatBlue : Css.Color }
+palette : { turkishRose : Css.Color, apache : Css.Color, flatBlue : Css.Color, white : Css.Color, black : Css.Color }
 palette =
     { turkishRose = Css.hex "#BF6F94"
     , apache = Css.hex "#DFC370"
     , flatBlue = Css.hex "#3F76A6"
+    , white = Css.hex "#FFFFFF"
+    , black = Css.hex "#000000"
     }
 
 
 type alias Theme =
     { primary : Css.Color
+    , onPrimary : Css.Color
+    , background : Css.Color
     , secondary : Css.Color
     , tertiary : Css.Color
     }
@@ -25,6 +29,8 @@ defaultTheme =
     { primary = palette.turkishRose
     , secondary = palette.flatBlue
     , tertiary = palette.apache
+    , onPrimary = palette.white
+    , background = palette.white
     }
 
 
@@ -38,6 +44,8 @@ darkTheme =
     { primary = palette.apache
     , secondary = palette.flatBlue
     , tertiary = palette.turkishRose
+    , onPrimary = palette.white
+    , background = palette.black
     }
 
 
