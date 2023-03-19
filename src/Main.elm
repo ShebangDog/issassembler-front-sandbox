@@ -6,13 +6,13 @@ import Color
 import Css
 import Css.Global
 import Css.Reset
-import Html.Styled exposing (a, button, div, text)
+import Html.Styled exposing (a)
 import Html.Styled.Attributes exposing (href)
-import Html.Styled.Events exposing (onClick)
 import Json.Decode
 import Json.Encode
 import Monocle.Lens exposing (Lens)
 import NavigationBar
+import Page
 import Route exposing (Route)
 import Url
 import Url.Parser exposing (Parser)
@@ -220,25 +220,7 @@ view model =
                     ]
                 )
             , NavigationBar.view title Route.routeSet model.route transition
-            , case model.route of
-                Route.Top _ ->
-                    div
-                        []
-                        (List.concat
-                            [ [ text "main"
-                              , text (String.fromInt model.data.count)
-                              ]
-                            , Color.displayModeSet
-                                |> List.map
-                                    (\mode -> button [ onClick (ModeChanged mode) ] [ text (Color.toString mode) ])
-                            ]
-                        )
-
-                Route.History _ ->
-                    div
-                        []
-                        [ text "history"
-                        ]
+            , Page.view model (Page.Action ModeChanged)
             ]
     }
 
