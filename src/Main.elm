@@ -1,4 +1,4 @@
-port module Main exposing (Model, Msg(..), Status(..), handleUrlChange, init, subscriptions, transition, update, view)
+port module Main exposing (Model, Msg(..), Status(..), handleUrlChange, init, subscriptions, update, view)
 
 import Browser exposing (Document)
 import Browser.Navigation
@@ -219,7 +219,7 @@ view model =
                     , Css.Reset.ericMeyer
                     ]
                 )
-            , NavigationBar.view title Route.routeSet model.route transition
+            , NavigationBar.view title Route.routeSet model.route Route.transition
             , Page.view model (Page.Action ModeChanged)
             ]
     }
@@ -228,11 +228,6 @@ view model =
 title : String
 title =
     "Issassembler"
-
-
-transition : Route -> Html.Styled.Attribute msg
-transition route =
-    href ("/" ++ Route.toString route)
 
 
 subscriptions : Model -> Sub Msg
