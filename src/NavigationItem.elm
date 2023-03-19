@@ -1,13 +1,14 @@
 module NavigationItem exposing (view)
 
+import Color
 import Css
 import Html.Styled exposing (a, img, li, p, span, text)
 import Html.Styled.Attributes exposing (css, src)
 import Route exposing (Route)
 
 
-view : (Route -> Html.Styled.Attribute msg) -> Bool -> Route -> Html.Styled.Html msg
-view transition isSelected route =
+view : Color.Theme -> (Route -> Html.Styled.Attribute msg) -> Bool -> Route -> Html.Styled.Html msg
+view theme transition isSelected route =
     let
         path =
             "../"
@@ -25,11 +26,24 @@ view transition isSelected route =
         content =
             text (Route.toString route)
 
-        element =
+        style =
+            css
+                [ Css.color theme.onPrimary
+                , Css.textDecorationLine Css.none
+                ]
+
+        underline =
             if isSelected then
-                span [] [ content ]
+                Css.borderBottom3 (Css.px 2) Css.solid theme.secondary
 
             else
-                a [ transition route ] [ content ]
+                Css.borderBottom3 (Css.px 2) Css.solid Css.transparent
+
+        element =
+            a
+                [ style
+                , transition route
+                ]
+                [ content ]
     in
-    li [ css [ Css.padding (Css.px 8) ] ] [ icon, element ]
+    li [ css [ Css.padding (Css.px 8), underline ] ] [ icon, element ]
