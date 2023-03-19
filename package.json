@@ -18,6 +18,7 @@
     "update-expected": "reg-cli ./screenshot ./expected ./diff -U",
     "compare": "reg-cli ./screenshot ./expected ./diff -R ./report.html",
     "dev": "elm reactor",
+    "type-check": "elm make ${npm_config_file} --output=/dev/null",
     "fix": "run-s fix:*",
     "fix:package": "fixpack",
     "test": "npx elm-test-rs \"src/**/*.elm\"",
