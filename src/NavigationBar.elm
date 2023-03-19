@@ -15,20 +15,27 @@ view theme title routeList currentRoute transition =
             NavigationItem.view transition (route == currentRoute) route
     in
     header
-        []
+        [ css
+            [ Css.backgroundColor theme.primary
+            , Css.color theme.onPrimary
+            , Css.padding2 (Css.px 24) (Css.px 24)
+            ]
+        ]
         [ h1
             [ css
-                [ Css.backgroundColor theme.primary
-                , Css.color theme.onPrimary
-                , Css.fontSize (Css.px 32)
-                , Css.padding2 (Css.px 16) (Css.px 16)
+                [ Css.fontSize (Css.px 32)
                 ]
             ]
             [ text title ]
         , div []
             [ nav []
                 [ ul
-                    []
+                    [ css
+                        [ Css.displayFlex
+                        , Css.flexDirection Css.row
+                        , Css.marginTop (Css.px 16)
+                        ]
+                    ]
                     (List.map navigationItem routeList)
                 ]
             ]
