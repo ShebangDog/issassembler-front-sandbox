@@ -4,7 +4,6 @@ import Browser
 import Css.Global
 import Css.Reset
 import Html.Styled exposing (Html, ul)
-import Main exposing (transition)
 import NavigationItem
 import Route
 
@@ -34,7 +33,7 @@ view _ =
         []
         [ Css.Global.global Css.Reset.ericMeyer
         , NavigationItem.view
-            transition
+            Route.transition
             True
             Route.top
         ]
