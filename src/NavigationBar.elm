@@ -12,7 +12,7 @@ view : Color.Theme -> String -> List Route -> Route -> (Route -> Html.Styled.Att
 view theme title routeList currentRoute transition =
     let
         navigationItem route =
-            NavigationItem.view transition (route == currentRoute) route
+            NavigationItem.view theme transition (route == currentRoute) route
     in
     header
         [ css
@@ -33,7 +33,6 @@ view theme title routeList currentRoute transition =
                     [ css
                         [ Css.displayFlex
                         , Css.flexDirection Css.row
-                        , Css.property "gap" "16px"
                         , Css.marginTop (Css.px 16)
                         ]
                     ]
