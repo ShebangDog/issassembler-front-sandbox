@@ -18,6 +18,8 @@
     "update-expected": "reg-cli ./screenshot ./expected ./diff -U",
     "compare": "reg-cli ./screenshot ./expected ./diff -R ./report.html",
     "dev": "elm reactor",
+    "type-check:file": "elm make ${npm_config_file} --output=/dev/null",
+    "type-check": "find src -type f | xargs -IVAL elm make VAL --output=/dev/null",
     "fix": "run-s fix:*",
     "fix:package": "fixpack",
     "test": "npx elm-test-rs \"src/**/*.elm\"",
