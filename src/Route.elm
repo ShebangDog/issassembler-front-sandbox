@@ -68,15 +68,10 @@ suite : Test
 suite =
     describe "Route module"
         [ describe "toString"
-            [ test "toStringにTopを渡すとTopと返すこと" <|
-                \() ->
-                    Expect.equal
-                        (toString top)
-                        "Top"
-            , test "toStringにHistoryを渡すとHistoryと返すこと" <|
-                \() ->
-                    Expect.equal
-                        (toString history)
-                        "History"
+            [ test "toStringにTopを渡すとTopと返すこと" (\() -> Expect.equal (toString top) "Top")
+            , test "toStringにHistoryを渡すとHistoryと返すこと" (\() -> Expect.equal (toString history) "History")
+            ]
+        , describe "routeSet"
+            [ test "routeSetが全てのRoute variantを基に作られたTransition型のリストであること" (\() -> Expect.equal routeSet [ top, history ])
             ]
         ]
