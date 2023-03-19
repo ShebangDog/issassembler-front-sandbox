@@ -1,6 +1,7 @@
 module Preview.NavigationItem exposing (..)
 
 import Browser
+import Color
 import Css.Global
 import Css.Reset
 import Html.Styled exposing (Html, ul)
@@ -33,6 +34,7 @@ view _ =
         []
         [ Css.Global.global Css.Reset.ericMeyer
         , NavigationItem.view
+            Color.defaultTheme
             Route.transition
             True
             Route.top

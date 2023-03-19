@@ -212,14 +212,14 @@ view model =
     in
     { title = title
     , body =
-        List.map Html.Styled.toUnstyled <|
+        List.map Html.Styled.toUnstyled
             [ Css.Global.global
                 (List.concat
-                    [ [ Css.Global.body [ Css.backgroundColor theme.primary ] ]
+                    [ [ Css.Global.body [ Css.backgroundColor theme.background ] ]
                     , Css.Reset.ericMeyer
                     ]
                 )
-            , NavigationBar.view title Route.routeSet model.route Route.transition
+            , NavigationBar.view theme title Route.routeSet model.route Route.transition
             , Page.view model (Page.Action ModeChanged)
             ]
     }
