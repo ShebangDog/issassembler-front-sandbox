@@ -37,8 +37,8 @@ jobs:
         with:
           name: test-result
           path: |
-            ./expected/src/Preview/**/*.png
-            ./screenshot/src/Preview/**/*.png
+            ./expected/src/**/*.png
+            ./screenshot/src/**/*.png
             ./diff/**/*.png
             ./report.html
             ./reg.json
