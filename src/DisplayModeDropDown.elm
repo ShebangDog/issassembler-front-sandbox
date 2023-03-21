@@ -12,18 +12,31 @@ import Html.Styled.Attributes exposing (css)
 -- Implement
 
 
-view : List Css.Style -> Color.Theme -> (Color.DisplayMode -> msg) -> Html.Styled.Html msg
-view style theme clickedAction =
+type alias Model msg =
+    { theme : Color.Theme
+    , updateDisplayMode : Color.DisplayMode -> msg
+    }
+
+
+view : List Css.Style -> Model msg -> Html.Styled.Html msg
+view style model =
     let
         mergedStyle =
             List.concat
                 [ style
-                , [ Css.backgroundColor theme.primaryBright
+                , [ Css.backgroundColor model.theme.primaryBright
                   ]
                 ]
 
+        selectableItemView mode =
+            DisplayModeSelectableItem.view
+                model.theme
+                [ Css.padding (Css.px 8) ]
+                mode
+                model.updateDisplayMode
+
         selectableItemModelList =
-            List.map (\mode -> DisplayModeSelectableItem.view theme [ Css.padding (Css.px 8) ] mode clickedAction) Color.displayModeSet
+            List.map selectableItemView Color.displayModeSet
     in
     div
         [ css mergedStyle
@@ -39,12 +52,18 @@ type Msg
     = None
 
 
-init : ()
+type alias PreviewModel =
+    Model Msg
+
+
+init : PreviewModel
 init =
-    ()
+    { theme = Color.defaultTheme
+    , updateDisplayMode = \_ -> None
+    }
 
 
-main : Program () () Msg
+main : Program () PreviewModel Msg
 main =
     Browser.sandbox
         { init = init
@@ -53,14 +72,14 @@ main =
         }
 
 
-update : Msg -> () -> ()
-update _ _ =
-    ()
+update : Msg -> PreviewModel -> PreviewModel
+update _ model =
+    model
 
 
-preview : () -> Html Msg
-preview _ =
+preview : PreviewModel -> Html Msg
+preview model =
     Html.Styled.div
         [ css [ Css.width (Css.px 120) ] ]
-        [ view [] Color.defaultTheme (\_ -> None)
+        [ view [] model
         ]
