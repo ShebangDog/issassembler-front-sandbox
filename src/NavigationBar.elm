@@ -9,23 +9,42 @@ import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events exposing (onClick)
 import NavigationItem
 import OpenState exposing (OpenState)
-import Route exposing (Route)
+import Route
 
 
 
 -- Implement
 
 
-view : Color.Theme -> String -> OpenState -> List Route -> Route -> Color.DisplayMode -> (Route -> Html.Styled.Attribute msg) -> (Color.DisplayMode -> msg) -> (OpenState.OpenState -> msg) -> Html.Styled.Html msg
-view theme title openState routeList currentRoute displayMode transition updateMode switchState =
+type alias Model a msg =
+    { a
+        | theme : Color.Theme
+        , title : String
+        , openState : OpenState
+        , routeSet : List Route.Route
+        , route : Route.Route
+        , displayMode : Color.DisplayMode
+        , handleNavigationClicked : Route.Route -> Html.Styled.Attribute msg
+        , handleItemSelected : Color.DisplayMode -> msg
+        , switchOpenState : OpenState -> msg
+    }
+
+
+view : Model a msg -> Html.Styled.Html msg
+view model =
     let
         navigationItem route =
-            NavigationItem.view theme transition (route == currentRoute) route
+            NavigationItem.view
+                { theme = model.theme
+                , handleNavigationClicked = model.handleNavigationClicked
+                , isSelected = model.route == route
+                , route = model.route
+                }
     in
     header
         [ css
-            [ Css.backgroundColor theme.primary
-            , Css.color theme.onPrimary
+            [ Css.backgroundColor model.theme.primary
+            , Css.color model.theme.onPrimary
             , Css.padding2 (Css.px 24) (Css.px 24)
             ]
         ]
@@ -34,7 +53,7 @@ view theme title openState routeList currentRoute displayMode transition updateM
                 [ Css.fontSize (Css.px 32)
                 ]
             ]
-            [ text title ]
+            [ text model.title ]
         , div []
             [ nav []
                 [ ul
@@ -45,8 +64,8 @@ view theme title openState routeList currentRoute displayMode transition updateM
                         ]
                     ]
                     (List.concat
-                        [ List.map navigationItem routeList
-                        , [ DisplayModeSwitcher.view theme displayMode openState updateMode switchState ]
+                        [ List.map navigationItem model.routeSet
+                        , [ DisplayModeSwitcher.view model ]
                         ]
                     )
                 ]
@@ -62,12 +81,25 @@ type Msg
     = None
 
 
-init : ()
+type alias PreviewModel =
+    Model {} Msg
+
+
+init : PreviewModel
 init =
-    ()
+    { theme = Color.defaultTheme
+    , displayMode = Color.Default
+    , title = "issassembler"
+    , openState = OpenState.Open
+    , routeSet = Route.routeSet
+    , route = Route.top
+    , handleItemSelected = \_ -> None
+    , handleNavigationClicked = \_ -> onClick None
+    , switchOpenState = \_ -> None
+    }
 
 
-main : Program () () Msg
+main : Program () PreviewModel Msg
 main =
     Browser.sandbox
         { init = init
@@ -76,23 +108,11 @@ main =
         }
 
 
-update : Msg -> () -> ()
-update _ _ =
-    ()
+update : Msg -> PreviewModel -> PreviewModel
+update _ model =
+    model
 
 
-preview : () -> Html.Styled.Html Msg
-preview _ =
-    Html.Styled.div
-        []
-        [ view
-            Color.defaultTheme
-            "navigationBar"
-            OpenState.Open
-            Route.routeSet
-            Route.top
-            Color.Default
-            (\_ -> onClick None)
-            (\_ -> None)
-            (\_ -> None)
-        ]
+preview : PreviewModel -> Html.Styled.Html Msg
+preview model =
+    view model
