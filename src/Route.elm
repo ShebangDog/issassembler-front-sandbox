@@ -1,8 +1,9 @@
-module Route exposing (Route(..), history, routeSet, suite, toHistory, toString, toTop, top, transition)
+module Route exposing (Route(..), asPath, history, routeSet, suite, toHistory, toString, toTop, top, transition)
 
 import Expect
 import Html.Styled
 import Html.Styled.Attributes exposing (href)
+import Json.Decode exposing (string)
 import Test exposing (Test, describe, test)
 
 
@@ -64,6 +65,10 @@ top =
 history : Route
 history =
     History Transition
+
+
+
+-- TODO: 型を変更する(Route -> String)。それに伴い名前も変更する(asPathとか)
 
 
 transition : Route -> Html.Styled.Attribute msg
