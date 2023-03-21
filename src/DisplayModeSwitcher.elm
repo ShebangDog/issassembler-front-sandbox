@@ -1,7 +1,7 @@
 module DisplayModeSwitcher exposing (view)
 
 import Browser
-import Color exposing (DisplayMode)
+import Color
 import Css
 import DisplayModeDropDown
 import DisplayModeIcon
@@ -16,8 +16,18 @@ import OpenState exposing (OpenState(..))
 -- Implement
 
 
-view : Color.Theme -> DisplayMode -> OpenState -> (Color.DisplayMode -> msg) -> (OpenState.OpenState -> msg) -> Html.Styled.Html msg
-view theme displayMode openState updateMode switchState =
+type alias Model a msg =
+    { a
+        | theme : Color.Theme
+        , displayMode : Color.DisplayMode
+        , openState : OpenState
+        , handleItemSelected : Color.DisplayMode -> msg
+        , switchOpenState : OpenState.OpenState -> msg
+    }
+
+
+view : Model a msg -> Html.Styled.Html msg
+view model =
     let
         dropDown =
             DisplayModeDropDown.view
@@ -25,8 +35,7 @@ view theme displayMode openState updateMode switchState =
                 , Css.top (Css.pct 100)
                 , Css.transform (Css.translateY (Css.px 4))
                 ]
-                theme
-                updateMode
+                { model | handleItemSelected = model.handleItemSelected }
 
         overlay =
             div
@@ -37,12 +46,12 @@ view theme displayMode openState updateMode switchState =
                     , Css.top (Css.px 0)
                     , Css.left (Css.px 0)
                     ]
-                , onClick (switchState openState)
+                , onClick (model.switchOpenState model.openState)
                 ]
                 []
 
         ( dropDownView, overlayView ) =
-            case openState of
+            case model.openState of
                 Open ->
                     ( dropDown, overlay )
 
@@ -51,20 +60,20 @@ view theme displayMode openState updateMode switchState =
 
         colorStyle =
             Css.batch
-                [ case openState of
+                [ case model.openState of
                     OpenState.Open ->
-                        Css.backgroundColor theme.primaryBright
+                        Css.backgroundColor model.theme.primaryBright
 
                     OpenState.Close ->
                         Css.backgroundColor Css.transparent
                 , Css.hover
-                    [ Css.backgroundColor theme.primaryBright
+                    [ Css.backgroundColor model.theme.primaryBright
                     ]
                 ]
 
         indicatorView =
             div
-                [ onClick (switchState openState)
+                [ onClick (model.switchOpenState model.openState)
                 , css
                     [ Css.displayFlex
                     , Css.flexDirection Css.row
@@ -75,7 +84,7 @@ view theme displayMode openState updateMode switchState =
                     , colorStyle
                     ]
                 ]
-                [ DisplayModeIcon.view displayMode
+                [ DisplayModeIcon.view model
                 , text "Theme"
                 , dropDownView
                 ]
@@ -91,12 +100,21 @@ type Msg
     = None
 
 
-init : ()
+type alias PreviewModel =
+    Model {} Msg
+
+
+init : PreviewModel
 init =
-    ()
+    { theme = Color.defaultTheme
+    , displayMode = Color.Default
+    , openState = OpenState.Open
+    , handleItemSelected = \_ -> None
+    , switchOpenState = \_ -> None
+    }
 
 
-main : Program () () Msg
+main : Program () PreviewModel Msg
 main =
     Browser.sandbox
         { init = init
@@ -105,14 +123,14 @@ main =
         }
 
 
-update : Msg -> () -> ()
-update _ _ =
-    ()
+update : Msg -> PreviewModel -> PreviewModel
+update _ model =
+    model
 
 
-preview : () -> Html Msg
-preview _ =
+preview : PreviewModel -> Html Msg
+preview model =
     Html.Styled.div
         []
-        [ view Color.defaultTheme Color.Default OpenState.Open (\_ -> None) (\_ -> None)
+        [ view model
         ]
