@@ -13,8 +13,16 @@ import Html.Styled.Events exposing (onClick)
 -- Implement
 
 
-view : Color.Theme -> List Css.Style -> Color.DisplayMode -> (Color.DisplayMode -> msg) -> Html.Styled.Html msg
-view theme style displayMode consumeDisplayMode =
+type alias Model a msg =
+    { a
+        | theme : Color.Theme
+        , displayMode : Color.DisplayMode
+        , handleSelected : Color.DisplayMode -> msg
+    }
+
+
+view : List Css.Style -> Model a msg -> Html.Styled.Html msg
+view style model =
     let
         mergedStyle =
             List.concat
@@ -29,10 +37,10 @@ view theme style displayMode consumeDisplayMode =
         item =
             li
                 [ css mergedStyle
-                , onClick (consumeDisplayMode displayMode)
+                , onClick (model.handleSelected model.displayMode)
                 ]
-                [ DisplayModeIcon.view displayMode
-                , text (Color.toString displayMode)
+                [ DisplayModeIcon.view model
+                , text (Color.toString model.displayMode)
                 ]
     in
     item
@@ -42,12 +50,23 @@ view theme style displayMode consumeDisplayMode =
 -- Preview
 
 
-init : ()
+type Msg
+    = None
+
+
+type alias PreviewModel =
+    Model {} Msg
+
+
+init : PreviewModel
 init =
-    ()
+    { theme = Color.defaultTheme
+    , displayMode = Color.Default
+    , handleSelected = \_ -> None
+    }
 
 
-main : Program () () Msg
+main : Program () PreviewModel Msg
 main =
     Browser.sandbox
         { init = init
@@ -56,15 +75,11 @@ main =
         }
 
 
-type Msg
-    = A
+update : Msg -> PreviewModel -> PreviewModel
+update _ model =
+    model
 
 
-update : Msg -> () -> ()
-update _ _ =
-    ()
-
-
-preview : () -> Html.Styled.Html Msg
-preview _ =
-    view Color.defaultTheme [] Color.Default (\_ -> A)
+preview : PreviewModel -> Html.Styled.Html Msg
+preview model =
+    view [] model
