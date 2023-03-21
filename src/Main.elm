@@ -236,7 +236,17 @@ view model =
                     , Css.Reset.ericMeyer
                     ]
                 )
-            , NavigationBar.view theme title model.openState Route.routeSet model.route model.mode Route.transition ModeChanged ToggleChanged
+            , NavigationBar.view
+                { theme = theme
+                , title = title
+                , openState = model.openState
+                , routeSet = Route.routeSet
+                , route = model.route
+                , displayMode = model.mode
+                , handleNavigationClicked = Route.transition
+                , handleItemSelected = ModeChanged
+                , switchOpenState = ToggleChanged
+                }
             , Page.view model (Page.Action ModeChanged)
             ]
     }
