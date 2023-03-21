@@ -12,13 +12,14 @@ import Html.Styled.Attributes exposing (css)
 -- Implement
 
 
-type alias Model msg =
-    { theme : Color.Theme
-    , updateDisplayMode : Color.DisplayMode -> msg
+type alias Model a msg =
+    { a
+        | theme : Color.Theme
+        , handleItemSelected : Color.DisplayMode -> msg
     }
 
 
-view : List Css.Style -> Model msg -> Html.Styled.Html msg
+view : List Css.Style -> Model a msg -> Html.Styled.Html msg
 view style model =
     let
         mergedStyle =
@@ -30,10 +31,11 @@ view style model =
 
         selectableItemView mode =
             DisplayModeSelectableItem.view
-                model.theme
                 [ Css.padding (Css.px 8) ]
-                mode
-                model.updateDisplayMode
+                { theme = model.theme
+                , handleSelected = model.handleItemSelected
+                , displayMode = mode
+                }
 
         selectableItemModelList =
             List.map selectableItemView Color.displayModeSet
@@ -53,13 +55,13 @@ type Msg
 
 
 type alias PreviewModel =
-    Model Msg
+    Model {} Msg
 
 
 init : PreviewModel
 init =
     { theme = Color.defaultTheme
-    , updateDisplayMode = \_ -> None
+    , handleItemSelected = \_ -> None
     }
 
 
