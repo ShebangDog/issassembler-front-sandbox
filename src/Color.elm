@@ -5,6 +5,10 @@ import Expect
 import Test exposing (Test, describe, test)
 
 
+
+-- Implement
+
+
 palette : { cerisePink : Css.Color, pinkSherbet : Css.Color, apache : Css.Color, flatBlue : Css.Color, white : Css.Color, black : Css.Color }
 palette =
     { cerisePink = Css.hex "#EC407A"
@@ -103,7 +107,7 @@ toString mode =
 
 
 
--- テスト
+-- Spec
 
 
 suite : Test
@@ -129,3 +133,8 @@ suite =
             , test "themeがDarkを受け取ったとき、darkThemeを返すこと" (\() -> Expect.equal (theme Dark) darkTheme)
             ]
         ]
+
+
+
+-- Preview
+-- TODO: カラーパレットコンポーネントを定義して、色を管理する

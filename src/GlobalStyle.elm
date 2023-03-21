@@ -1,9 +1,13 @@
-module Preview.GlobalStyle exposing (..)
+module GlobalStyle exposing (..)
 
 import Css
 import Css.Animations
 import Css.Global
 import Html.Styled exposing (Html)
+
+
+
+-- Implement
 
 
 stopAnimation : Html msg

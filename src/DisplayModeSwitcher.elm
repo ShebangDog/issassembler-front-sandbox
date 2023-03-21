@@ -23,6 +23,7 @@ view theme displayMode openState updateMode switchState =
             DisplayModeDropDown.view
                 [ Css.position Css.absolute
                 , Css.top (Css.pct 100)
+                , Css.transform (Css.translateY (Css.px 4))
                 ]
                 theme
                 updateMode

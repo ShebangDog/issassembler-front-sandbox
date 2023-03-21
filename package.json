@@ -13,8 +13,8 @@
   },
   "scripts": {
     "capture-actual": "run-s capture-actual:*",
-    "capture-actual:prepare-directory": "find src/Preview -type d | xargs -IVAL mkdir -p screenshot/VAL ",
-    "capture-actual:main": "find src/Preview -type f | xargs -IVAL node script/screenshot.js VAL",
+    "capture-actual:prepare-directory": "find src -type d | xargs -IVAL mkdir -p screenshot/VAL ",
+    "capture-actual:main": "find src -type f | xargs -IVAL node script/screenshot.js VAL",
     "update-expected": "reg-cli ./screenshot ./expected ./diff -U",
     "compare": "reg-cli ./screenshot ./expected ./diff -R ./report.html",
     "dev": "elm reactor",

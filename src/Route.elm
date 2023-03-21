@@ -6,6 +6,10 @@ import Html.Styled.Attributes exposing (href)
 import Test exposing (Test, describe, test)
 
 
+
+-- Implement
+
+
 type Transition a
     = Transition
 
@@ -68,7 +72,7 @@ transition route =
 
 
 
--- テスト
+-- Test
 
 
 suite : Test

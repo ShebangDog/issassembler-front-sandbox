@@ -1,10 +1,16 @@
 module NavigationItem exposing (view)
 
+import Browser
 import Color
 import Css
-import Html.Styled exposing (a, img, li, text)
+import Html.Styled exposing (Html, a, img, li, text)
 import Html.Styled.Attributes exposing (css, src)
+import Html.Styled.Events exposing (onClick)
 import Route exposing (Route)
+
+
+
+-- Implement
 
 
 view : Color.Theme -> (Route -> Html.Styled.Attribute msg) -> Bool -> Route -> Html.Styled.Html msg
@@ -47,3 +53,38 @@ view theme transition isSelected route =
                 [ content ]
     in
     li [ css [ Css.padding (Css.px 8), underline ] ] [ icon, element ]
+
+
+
+-- Preview
+
+
+type Msg
+    = None
+
+
+init : ()
+init =
+    ()
+
+
+main : Program () () Msg
+main =
+    Browser.sandbox
+        { init = init
+        , view = preview >> Html.Styled.toUnstyled
+        , update = update
+        }
+
+
+update : Msg -> () -> ()
+update _ _ =
+    ()
+
+
+preview : () -> Html Msg
+preview _ =
+    Html.Styled.div
+        []
+        [ view Color.defaultTheme (\_ -> onClick None) True Route.top
+        ]
