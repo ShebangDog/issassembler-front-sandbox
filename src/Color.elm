@@ -103,7 +103,7 @@ toString mode =
 
 
 
--- テスト
+-- Test
 
 
 suite : Test
