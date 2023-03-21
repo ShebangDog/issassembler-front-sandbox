@@ -16,6 +16,7 @@ import Route exposing (Route)
 view : Color.Theme -> (Route -> Html.Styled.Attribute msg) -> Bool -> Route -> Html.Styled.Html msg
 view theme transition isSelected route =
     let
+        -- TODO: icon用の描画関数に分ける
         path =
             "../"
                 ++ (case route of
