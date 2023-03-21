@@ -2,7 +2,7 @@ module NavigationItem exposing (view)
 
 import Color
 import Css
-import Html.Styled exposing (a, img, li, p, span, text)
+import Html.Styled exposing (a, img, li, text)
 import Html.Styled.Attributes exposing (css, src)
 import Route exposing (Route)
 
