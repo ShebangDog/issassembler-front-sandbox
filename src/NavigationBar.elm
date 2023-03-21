@@ -2,14 +2,16 @@ module NavigationBar exposing (view)
 
 import Color
 import Css
+import DisplayModeSwitcher
 import Html.Styled exposing (div, h1, header, nav, text, ul)
 import Html.Styled.Attributes exposing (css)
 import NavigationItem
+import OpenState exposing (OpenState)
 import Route exposing (Route)
 
 
-view : Color.Theme -> String -> List Route -> Route -> (Route -> Html.Styled.Attribute msg) -> Html.Styled.Html msg
-view theme title routeList currentRoute transition =
+view : Color.Theme -> String -> OpenState -> List Route -> Route -> Color.DisplayMode -> (Route -> Html.Styled.Attribute msg) -> (Color.DisplayMode -> msg) -> (OpenState.OpenState -> msg) -> Html.Styled.Html msg
+view theme title openState routeList currentRoute displayMode transition updateMode switchState =
     let
         navigationItem route =
             NavigationItem.view theme transition (route == currentRoute) route
@@ -36,7 +38,11 @@ view theme title routeList currentRoute transition =
                         , Css.marginTop (Css.px 16)
                         ]
                     ]
-                    (List.map navigationItem routeList)
+                    (List.concat
+                        [ List.map navigationItem routeList
+                        , [ DisplayModeSwitcher.view theme displayMode openState updateMode switchState ]
+                        ]
+                    )
                 ]
             ]
         ]
