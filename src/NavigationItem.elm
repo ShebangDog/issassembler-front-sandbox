@@ -6,20 +6,29 @@ import Css
 import Html.Styled exposing (Html, a, img, li, text)
 import Html.Styled.Attributes exposing (css, src)
 import Html.Styled.Events exposing (onClick)
-import Route exposing (Route)
+import Route
 
 
 
 -- Implement
 
 
-view : Color.Theme -> (Route -> Html.Styled.Attribute msg) -> Bool -> Route -> Html.Styled.Html msg
-view theme transition isSelected route =
+type alias Model a msg =
+    { a
+        | theme : Color.Theme
+        , handleNavigationClicked : Route.Route -> Html.Styled.Attribute msg
+        , isSelected : Bool
+        , route : Route.Route
+    }
+
+
+view : Model a msg -> Html.Styled.Html msg
+view model =
     let
         -- TODO: icon用の描画関数に分ける
         path =
             "../"
-                ++ (case route of
+                ++ (case model.route of
                         Route.Top _ ->
                             "../assets/pyramid.png"
 
@@ -31,17 +40,17 @@ view theme transition isSelected route =
             img [ src path, css [ Css.width (Css.px 24) ] ] []
 
         content =
-            text (Route.toString route)
+            text (Route.toString model.route)
 
         style =
             css
-                [ Css.color theme.onPrimary
+                [ Css.color model.theme.onPrimary
                 , Css.textDecorationLine Css.none
                 ]
 
         underline =
-            if isSelected then
-                Css.borderBottom3 (Css.px 2) Css.solid theme.secondary
+            if model.isSelected then
+                Css.borderBottom3 (Css.px 2) Css.solid model.theme.secondary
 
             else
                 Css.borderBottom3 (Css.px 2) Css.solid Css.transparent
@@ -49,7 +58,7 @@ view theme transition isSelected route =
         element =
             a
                 [ style
-                , transition route
+                , model.handleNavigationClicked model.route
                 ]
                 [ content ]
     in
@@ -64,12 +73,20 @@ type Msg
     = None
 
 
-init : ()
+type alias PreviewModel =
+    Model {} Msg
+
+
+init : PreviewModel
 init =
-    ()
+    { theme = Color.defaultTheme
+    , route = Route.top
+    , isSelected = True
+    , handleNavigationClicked = \_ -> onClick None
+    }
 
 
-main : Program () () Msg
+main : Program () PreviewModel Msg
 main =
     Browser.sandbox
         { init = init
@@ -78,14 +95,11 @@ main =
         }
 
 
-update : Msg -> () -> ()
-update _ _ =
-    ()
+update : Msg -> PreviewModel -> PreviewModel
+update _ model =
+    model
 
 
-preview : () -> Html Msg
-preview _ =
-    Html.Styled.div
-        []
-        [ view Color.defaultTheme (\_ -> onClick None) True Route.top
-        ]
+preview : PreviewModel -> Html Msg
+preview model =
+    view model
