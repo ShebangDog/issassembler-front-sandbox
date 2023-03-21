@@ -12,6 +12,7 @@ import Json.Decode
 import Json.Encode
 import Monocle.Lens exposing (Lens)
 import NavigationBar
+import OpenState exposing (OpenState)
 import Page
 import Route exposing (Route)
 import Url
@@ -22,6 +23,7 @@ type Msg
     = LinkClicked Browser.UrlRequest
     | UrlChanged Route
     | ModeChanged Color.DisplayMode
+    | ToggleChanged OpenState
     | Receive ( Json.Encode.Value, Json.Encode.Value )
 
 
@@ -41,6 +43,7 @@ type alias Model =
     , route : Route
     , data : Data
     , mode : Color.DisplayMode
+    , openState : OpenState
     }
 
 
@@ -132,6 +135,7 @@ init flags url key =
         (Maybe.withDefault Route.top maybeRoute)
         (Result.withDefault (Data 10) dataResult)
         (Result.withDefault Color.Default colorResult)
+        OpenState.Close
     , Cmd.none
     )
 
@@ -197,6 +201,19 @@ update msg model =
             , Cmd.none
             )
 
+        ToggleChanged openState ->
+            ( { model
+                | openState =
+                    case openState of
+                        OpenState.Open ->
+                            OpenState.Close
+
+                        OpenState.Close ->
+                            OpenState.Open
+              }
+            , Cmd.none
+            )
+
 
 port storeToStorage : ( String, Json.Encode.Value ) -> Cmd msg
 
@@ -219,7 +236,7 @@ view model =
                     , Css.Reset.ericMeyer
                     ]
                 )
-            , NavigationBar.view theme title Route.routeSet model.route Route.transition
+            , NavigationBar.view theme title model.openState Route.routeSet model.route model.mode Route.transition ModeChanged ToggleChanged
             , Page.view model (Page.Action ModeChanged)
             ]
     }

@@ -7,6 +7,7 @@ import Css.Reset
 import Html.Styled exposing (div)
 import Html.Styled.Events exposing (onClick)
 import NavigationBar
+import OpenState
 import Route
 
 
@@ -41,7 +42,11 @@ view _ =
         , NavigationBar.view
             Color.defaultTheme
             "title"
+            OpenState.Open
             Route.routeSet
             Route.top
+            Color.Default
             (\_ -> onClick Clicked)
+            (\_ -> Clicked)
+            (\_ -> Clicked)
         ]

@@ -5,9 +5,10 @@ import Expect
 import Test exposing (Test, describe, test)
 
 
-palette : { turkishRose : Css.Color, apache : Css.Color, flatBlue : Css.Color, white : Css.Color, black : Css.Color }
+palette : { cerisePink : Css.Color, pinkSherbet : Css.Color, apache : Css.Color, flatBlue : Css.Color, white : Css.Color, black : Css.Color }
 palette =
-    { turkishRose = Css.hex "#BF6F94"
+    { cerisePink = Css.hex "#EC407A"
+    , pinkSherbet = Css.hex "#F48FB1"
     , apache = Css.hex "#DFC370"
     , flatBlue = Css.hex "#3F76A6"
     , white = Css.hex "#FFFFFF"
@@ -17,6 +18,7 @@ palette =
 
 type alias Theme =
     { primary : Css.Color
+    , primaryBright : Css.Color
     , onPrimary : Css.Color
     , background : Css.Color
     , secondary : Css.Color
@@ -26,7 +28,8 @@ type alias Theme =
 
 defaultTheme : Theme
 defaultTheme =
-    { primary = palette.turkishRose
+    { primary = palette.cerisePink
+    , primaryBright = palette.pinkSherbet
     , secondary = palette.flatBlue
     , tertiary = palette.apache
     , onPrimary = palette.white
@@ -42,8 +45,11 @@ lightTheme =
 darkTheme : Theme
 darkTheme =
     { primary = palette.apache
+
+    -- TODO(色決める)
+    , primaryBright = palette.apache
     , secondary = palette.flatBlue
-    , tertiary = palette.turkishRose
+    , tertiary = palette.cerisePink
     , onPrimary = palette.white
     , background = palette.black
     }
