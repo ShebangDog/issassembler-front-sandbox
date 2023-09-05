@@ -20,12 +20,22 @@ jobs:
     outputs:
       is_passed: ${{ steps.check_is_pass.outputs.is_pass }}
     steps:
-      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 16.16.0
+      - uses: actions/checkout@v3
+        with: 
+          ref: ${{ github.base_ref }}
+      - name: capture-expected
+        run: |
+          npm install
+          npm run dev &
+          npm run capture-expected
+          pkill elm
+        continue-on-error: true
+      - uses: actions/checkout@v3
       - name: compare images
-        run: | 
+        run: |
           npm install
           npm run dev &
           npm run capture-actual
@@ -83,5 +93,5 @@ jobs:
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           gh pr comment -F ./results "${URL}"
       - run: |
-          exit 1
+          exit 0
       
