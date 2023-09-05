@@ -1,9 +1,9 @@
 const print = (value) => console.log(value)
-const pathList = process.argv.slice(2)
+const [directory, ...pathList] = process.argv.slice(2)
 
 const puppeteer = require('puppeteer')
 
-;(async () => {
+;(async (dir) => {
     console.log("setting up")
     const browser = await puppeteer.launch({headless: true});
     console.log("browser up")
@@ -15,9 +15,9 @@ const puppeteer = require('puppeteer')
 
         const page = await browser.newPage();
         await page.goto(`http://localhost:8000/${path}`)
-        await page.screenshot({path: `screenshot/${path}.png`})
+        await page.screenshot({path: `${dir}/${path}.png`})
         await page.close()
     }
     
     await browser.close();
-})();
+})(directory);
