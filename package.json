@@ -14,7 +14,10 @@
   "scripts": {
     "capture-actual": "run-s capture-actual:*",
     "capture-actual:prepare-directory": "find src -type d | xargs -IVAL mkdir -p screenshot/VAL ",
-    "capture-actual:main": "find src -type f | xargs -IVAL node script/screenshot.js screenshot VAL",
+    "capture-actual:main": "find src -type f | xargs -IVAL node script/screenshot.js screenshot VAL",    
+    "capture-expected": "run-s capture-expected:*",
+    "capture-expected:prepare-directory": "find src -type d | xargs -IVAL mkdir -p expected/VAL ",
+    "capture-expected:main": "find src -type f | xargs -IVAL node script/screenshot.js expected VAL",
     "update-expected": "reg-cli ./screenshot ./expected ./diff -U",
     "compare": "reg-cli ./screenshot ./expected ./diff -R ./report.html",
     "dev": "elm reactor",
