@@ -1,3 +1,4 @@
+console.log(process.argv)
 const [labels, targetLabelName] = process.argv.slice(2)
 console.log(labels)
 
