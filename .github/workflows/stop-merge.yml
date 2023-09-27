@@ -1,5 +1,8 @@
 name: stop merge feature
 
+defaults:
+  run:
+    working-directory: ./script
 on:
   pull_request:
     types:
@@ -21,7 +24,7 @@ jobs:
           echo ${{github.event.pull_request}}
       - name: labelsの存在判定をする
         run: |
-          node ./script/isExist.js ${{github.event.pull_request}} stop-merge | xargs echo
+          node ./isExist.js ${{github.event.pull_request}} stop-merge | xargs echo
       - name: stop merge
         run: |
           exit 1
