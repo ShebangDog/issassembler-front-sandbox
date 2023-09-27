@@ -18,10 +18,10 @@ jobs:
     steps:
       - name: labelsを出力する
         run: |
-          echo ${{github.event.pull_request}}
+          echo ${{toJson(github.event.pull_request)}}
       - name: labelsの存在判定をする
         run: |
-          node ./isExist.js ${{github.event.pull_request}} stop-merge | xargs echo
+          node ./isExist.js ${{toJson(github.event.pull_request)}} stop-merge | xargs echo
       - name: stop merge
         run: |
           exit 1
