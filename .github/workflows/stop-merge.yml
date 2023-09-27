@@ -1,0 +1,27 @@
+name: stop merge feature
+
+on:
+  pull_request:
+    types:
+      - "opened"
+      - "labeled"
+      - "unlabeled"
+      - "edited"
+      - "synchronize"
+      - "ready_for_review"
+      - "reopened"
+
+jobs:
+  check-blocked-merge:
+    timeout-minutes: 15
+    runs-on: ubuntu-22.04
+    steps:
+      - name: labelsを出力する
+        run: |
+          echo ${{github.event.pull_request}}
+      - name: labelsの存在判定をする
+        run: |
+          node ./script/isExist.js ${{github.event.pull_request}} stop-merge | xargs echo
+      - name: stop merge
+        run: |
+          exit 1
