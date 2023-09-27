@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: labelsを出力する
         run: |
-          ${{ toJson(github.event.pull_request) }} | jq ".labels"
+          '${{ toJson(github.event.pull_request) }}' | jq ".labels"
       - name: labelsの存在判定をする
         run: |
           ${{ toJson(github.event.pull_request) }} | jq ".labels"
