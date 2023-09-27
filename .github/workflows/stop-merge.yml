@@ -1,8 +1,5 @@
 name: stop merge feature
 
-defaults:
-  run:
-    working-directory: ./script
 on:
   pull_request:
     types:
