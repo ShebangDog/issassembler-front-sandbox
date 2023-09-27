@@ -21,7 +21,7 @@ jobs:
           echo '${{ toJson(github.event.pull_request) }}' | jq ".labels"
       - name: labelsの存在判定をする
         run: |
-          echo '${{ toJson(github.event.pull_request) }}' | jq ".labels" | xargs -VAL node ./isExist.js VAL stop-merge | xargs echo
+          echo '${{ toJson(github.event.pull_request) }}' | jq ".labels" | xargs -VAL node ./isExist.js VAL stop-merge
       - name: stop merge
         run: |
           exit 1
