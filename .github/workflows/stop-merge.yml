@@ -23,7 +23,19 @@ jobs:
           echo '${{ toJson(github.event.pull_request) }}' | jq ".labels"
       - name: labelsの存在判定をする
         run: |
-          echo '${{ toJson(github.event.pull_request) }}' | jq ".labels" | xargs -IVAL node ./script/isExist.js 'VAL' stop-merge
+          echo '${{ toJson(github.event.pull_request) }}' | jq -c ".labels" | xargs -IVAL node ./script/isExist.js 'VAL' stop-merge
       - name: stop merge
         run: |
           exit 1
+
+          '[
+            {
+              "color": "8B5C5C",
+              "default": false,
+              "description": "",
+              "id": 6013871185,
+              "name": "stop-merge",
+              "node_id": "LA_kwDOI1RWtM8AAAABZnRkUQ",
+              "url": "https://api.github.com/repos/ShebangDog/issassembler-front-sandbox/labels/stop-merge"
+            }
+          ]'
