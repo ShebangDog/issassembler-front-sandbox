@@ -1,5 +1,8 @@
 name: stop merge feature
 
+defaults:
+  run:
+    working-directory: ./script
 on:
   pull_request:
     types:
@@ -23,7 +26,7 @@ jobs:
           echo '${{ toJson(github.event.pull_request) }}' | jq ".labels"
       - name: labelsの存在判定をする
         run: |
-          echo '${{ toJson(github.event.pull_request) }}' | jq ".labels" | xargs -IVAL node ./script/isExist.js VAL stop-merge
+          echo '${{ toJson(github.event.pull_request) }}' | jq ".labels" | xargs -IVAL node ./isExist.js VAL stop-merge
       - name: stop merge
         run: |
           exit 1
