@@ -1,7 +1,6 @@
-console.log(process.argv)
 const [labels, targetLabelName] = process.argv.slice(2)
-console.log(labels)
 
+const labelList = JSON.parse(labels)
 const isExist = labels.map(label => label.name).include(targetLabelName)
 
 console.log(isExist)
