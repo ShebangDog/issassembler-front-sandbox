@@ -4,7 +4,7 @@ workflows:
 
 # add stop-merge label if base-branch is not develop
 stop-merge:
-- base-branch: '!develop'
+- base-branch: '^(?!develop$).*'
 
 feature:
 - changed-files: ['src/**/*.elm']
