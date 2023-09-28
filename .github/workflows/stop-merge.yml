@@ -27,6 +27,6 @@ jobs:
         run: |
           echo ${{ env.has_label }}
       - name: stop merge
-        if: ${{ env.has_label == 1 }}
+        if: env.has_label == true
         run: |
           exit 1
