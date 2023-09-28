@@ -18,9 +18,6 @@ jobs:
       - name: declare has_label
         run: |
           echo has_label=${{ contains(github.event.pull_request.labels.*.name, 'stop-merge') }} >> $GITHUB_ENV
-      - name: declare has_label1
-        run: |
-          echo ${{ env.has_label }}
       - name: stop merge if has_label is true
         if: ${{ env.has_label == 'true' }} 
         run: |
