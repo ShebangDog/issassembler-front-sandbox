@@ -24,10 +24,8 @@ jobs:
       - name: labelsの存在判定をする
         run: |
           echo '${{ toJson(github.event.pull_request) }}' | 
-          jq -c ".labels" |
-          xargs -IVAL -0 node ./script/isExist.js 'VAL' stop-merge |
-          xargs -IVAL echo has_label=VAL >> $GITHUB_ENV
+          echo has_label=${{ contains(github.event.issue.labels.*.name, 'stop-merge') }} >> $GITHUB_ENV
       - name: stop merge
-        if: ${{ env.has_label == 1 }}
+        if: ${{ env.has_label == true }}
         run: |
           exit 1
