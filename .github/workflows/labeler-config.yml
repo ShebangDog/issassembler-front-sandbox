@@ -1,3 +1,9 @@
 # add workflows label
 workflows:
-- '.github/workflows/**/*'
+- all:
+    - changed-files: ['.github/workflows/**/*']
+
+# add stop-merge label if base-branch is not develop
+stop-merge:
+- all:
+    - base-branch: ['!develop']
