@@ -23,7 +23,7 @@ jobs:
         run: |
           echo '${{ toJson(github.event.pull_request) }}' | 
           jq -c ".labels" |
-          xargs -IVAL -0 node ./script/isExist.js 'VAL' stop-merge
+          xargs -IVAL -0 node ./script/isExist.js 'VAL' stop-merge |
           xargs -IVAL echo has_label=VAL >> $GITHUB_ENV
       - name: stop merge
         if: ${{ env.has_label == 1 }}
