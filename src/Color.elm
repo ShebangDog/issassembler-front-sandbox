@@ -6,7 +6,7 @@ import Test exposing (Test, describe, test)
 
 
 
--- Implement
+-- Implementa
 
 
 palette : { cerisePink : Css.Color, pinkSherbet : Css.Color, apache : Css.Color, flatBlue : Css.Color, white : Css.Color, black : Css.Color }
