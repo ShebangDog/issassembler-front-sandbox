@@ -23,7 +23,7 @@ jobs:
           echo '${{ toJson(github.event.pull_request) }}' | jq ".labels"
       - name: labelsの存在判定をする
         run: |
-          echo has_label=${{ contains(github.event.pull_request.labels.*.name, 'stop-merge') }}
+          echo has_label=${{ contains(github.event.pull_request.labels.*.name, 'stop-merge') }} &&
           echo has_label=${{ contains(github.event.pull_request.labels.*.name, 'stop-merge') }} >> $GITHUB_ENV
       - name: stop merge
         run: |
