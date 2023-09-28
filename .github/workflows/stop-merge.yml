@@ -16,17 +16,10 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-22.04
     steps:
-      - name: labelsを出力する
+      - name: declare has_label
         run: |
-          echo '${{ toJson(github.event.pull_request) }}' | jq ".labels"
-      - name: labelsの存在判定をする
-        run: |
-          echo has_label=${{ contains(github.event.pull_request.labels.*.name, 'stop-merge') }} &&
           echo has_label=${{ contains(github.event.pull_request.labels.*.name, 'stop-merge') }} >> $GITHUB_ENV
-      - name: stop merge
-        run: |
-          echo ${{ env.has_label }}
-      - name: stop merge
+      - name: stop merge if has_label is true
         if: env.has_label
         run: |
           exit 1
