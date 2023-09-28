@@ -3,5 +3,6 @@ const [labels, targetLabelName] = process.argv.slice(2)
 
 const labelList = JSON.parse(labels)
 const isExist = labelList.map(label => label.name).includes(targetLabelName)
+const result = isExist ? 1 : 0
 
-console.log(isExist)
+console.log(result)
