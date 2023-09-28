@@ -1,0 +1,3 @@
+# add workflows label
+workflows:
+- '.github/workflows/**/*'
