@@ -12,8 +12,7 @@ on:
       - "reopened"
 
 jobs:
-  check-blocked-merge:
-    timeout-minutes: 15
+  stop-merge:
     runs-on: ubuntu-22.04
     steps:
       - name: declare has_label
