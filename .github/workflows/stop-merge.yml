@@ -22,6 +22,6 @@ jobs:
         run: |
           echo ${{ contains(github.event.pull_request.labels.*.name, 'stop-merge') }}
       - name: stop merge if has_label is true
-        if: env.has_label == true
+        if: env.has_label
         run: |
           exit 1
