@@ -13,4 +13,4 @@ jobs:
       - name: use-labeler
         uses: actions/labeler@v5.0.0-alpha.1
         with: 
-          configuration-path: "./labeler-config.yml"
+          configuration-path: ".github/labeler-config.yml"
