@@ -1,7 +1,11 @@
-name: stop merge feature
+name: labeling
 
 on:
   pull_request:
+    types:
+      - "opened"
+      - "synchronize"
+      - "reopened"
 
 jobs:
   stop-merge:
