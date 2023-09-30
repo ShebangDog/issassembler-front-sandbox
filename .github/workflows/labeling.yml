@@ -16,3 +16,16 @@ jobs:
         with: 
           configuration-path: ".github/labeler-config.yml"
           sync-labels: true
+  stop-merge:
+    runs-on: ubuntu-22.04
+    needs: use-labeler
+      
+    steps:
+      - name: declare has_label
+        run: |
+          echo has_label=${{ contains(github.event.pull_request.labels.*.name, 'stop-merge') }} >> $GITHUB_ENV
+      - name: stop merge if has_label is true
+        if: ${{ env.has_label == 'true' }} 
+        run: |
+          exit 1
+          

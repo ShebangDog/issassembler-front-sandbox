@@ -5,20 +5,11 @@ on:
     types:
       - "labeled"
       - "unlabeled"
-  workflow_run: 
-    workflows: [labeling]
-    types: 
-      completed
 
 jobs:
   stop-merge:
     runs-on: ubuntu-22.04
     steps:
-      - name: debug
-        run: |
-          echo ${{ github.event_name }} &&
-          echo ${{ toJson(github.event_path) }} &&
-          echo ${{ toJson(github.event.pull_request.labels.*.name) }}
       - name: declare has_label
         run: |
           echo has_label=${{ contains(github.event.pull_request.labels.*.name, 'stop-merge') }} >> $GITHUB_ENV
