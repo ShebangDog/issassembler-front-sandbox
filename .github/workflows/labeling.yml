@@ -16,6 +16,7 @@ jobs:
         with: 
           configuration-path: ".github/labeler-config.yml"
           sync-labels: true
+          repo-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
   stop-merge:
     runs-on: ubuntu-22.04
     needs: use-labeler
