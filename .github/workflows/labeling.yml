@@ -1,7 +1,8 @@
 name: labeling
 
 on:
-  - pull_request_target
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
 
 jobs:
   use-labeler:
@@ -10,7 +11,15 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-22.04
     steps:
+      - name: Generate a token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: use-labeler
         uses: actions/labeler@v5.0.0-alpha.1
         with: 
           configuration-path: ".github/labeler-config.yml"
+          sync-labels: true
+          repo-token: ${{ steps.generate_token.outputs.token }}
