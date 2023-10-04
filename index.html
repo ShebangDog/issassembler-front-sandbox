@@ -1,0 +1,47 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Main</title>
+  <script src="main.js"></script>
+</head>
+
+<body>
+  <div id="myapp"></div>
+  <script>
+
+  // 定数
+  const storageKey = {
+    MODE: "mode"
+  }
+
+  const displayMode = {
+    DEFAULT: "default",
+    DARK: "dark",
+    LIGHT: "light",
+  }
+
+  const storage = window.localStorage
+
+  const initialDisplayMode = storage.getItem(storageKey.MODE) ?? displayMode["DEFAULT"]
+
+  const app = Elm.Main.init({
+    node: document.getElementById('myapp'),
+        flags: {
+            count: {
+              value: 11233
+            },
+            displayMode: initialDisplayMode
+        },
+  });
+
+  app.ports.storeToStorage.subscribe(function ([key, data]) {
+    storage.setItem(key, data)
+  });
+
+  window.onstorage = (event) => {
+    app.ports.storageReceiver.send([event.key, event.newValue])
+  };
+
+  </script>
+</body>
+</html>

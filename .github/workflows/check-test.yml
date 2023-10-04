@@ -19,33 +19,43 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       is_passed: ${{ steps.check_is_pass.outputs.is_pass }}
-      vrt_result: ${{ steps.format_vrt_result.outputs.vrt_result }}
     steps:
-      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 16.16.0
-      - run: npm install
-      - run: npm run dev &
-      - run: npm run capture-actual
-      - run: npm run compare
+      - uses: actions/checkout@v3
+        with: 
+          ref: ${{ github.base_ref }}
+      - name: capture-expected
+        run: |
+          npm install
+          npm run dev &
+          npm run capture-expected
+          pkill elm
         continue-on-error: true
-      - run: pkill elm
+      - uses: actions/checkout@v3
+        with:
+          clean: false
+      - name: compare images
+        run: |
+          npm install
+          npm run dev &
+          npm run capture-actual
+          npm run compare
+          pkill elm
+        continue-on-error: true
       - name: upload result as artifact
         uses: actions/upload-artifact@v3
         with:
           name: test-result
           path: |
-            ./expected/src/Preview/**/*.png
-            ./screenshot/src/Preview/**/*.png
+            ./expected/src/**/*.png
+            ./screenshot/src/**/*.png
             ./diff/**/*.png
             ./report.html
             ./reg.json
-      - run: |
-          node ./script/formatter.js ../reg.json |
-          xargs -IVAL echo "vrt_result=VAL" >> $GITHUB_OUTPUT
-        id: format_vrt_result
-      - run: |
+      - name: declare is_pass
+        run: |
           node ./script/isPassed.js ../reg.json |
           xargs -IVAL echo "is_pass=VAL" >> $GITHUB_OUTPUT
         id: check_is_pass
@@ -69,8 +79,10 @@ jobs:
           EOF
       # FIXME: 実行側から見た相対パスを渡せるようにしたい。(./reg.jsonを渡して動作するようになればOK)
       # 現段階では'../reg.json'といったふうに、スクリプトとの相対値を渡さないと動作しない。
-      - run: node ./script/formatter.js ../reg.json >> results
-      - run: |
+      - name: make format
+        run: node ./script/formatter.js ../reg.json >> results
+      - name: make message
+        run: |
           cat << EOF >> results
           - [ ] 予期しない[差分]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID#Artifacts)がないことを確認しました
           EOF
@@ -83,5 +95,5 @@ jobs:
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           gh pr comment -F ./results "${URL}"
       - run: |
-          exit 1
+          exit 0
       

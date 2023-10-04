@@ -1,9 +1,15 @@
 module Loading exposing (Model, view)
 
+import Browser
 import Css
 import Css.Animations
+import GlobalStyle
 import Html.Styled exposing (Html, div)
 import Html.Styled.Attributes exposing (css)
+
+
+
+-- Implement
 
 
 type alias Model =
@@ -16,7 +22,7 @@ view model =
     div
         [ css
             [ Css.width (Css.px 48)
-            , Css.height (Css.px 36)
+            , Css.height (Css.px 48)
             , Css.property "background-image" "conic-gradient(red 140deg, black 140deg, transparent 360deg)"
             , Css.borderRadius (Css.pct 50)
             , Css.position Css.relative
@@ -49,4 +55,37 @@ animateSpinner =
           , [ Css.Animations.transform [ Css.rotate (Css.deg 360) ]
             ]
           )
+        ]
+
+
+
+-- Preview
+
+
+init : Model
+init =
+    { span = 0
+    }
+
+
+main : Program () Model ()
+main =
+    Browser.sandbox
+        { init = init
+        , view = preview >> Html.Styled.toUnstyled
+        , update = update
+        }
+
+
+update : () -> Model -> Model
+update _ model =
+    model
+
+
+preview : Model -> Html msg
+preview model =
+    Html.Styled.div
+        []
+        [ GlobalStyle.stopAnimation
+        , view model
         ]
