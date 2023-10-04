@@ -3,7 +3,7 @@ workflows:
 - changed-files: ['.github/workflows/**/*']
 
 # add stop-merge label if base-branch is not develop
-stop:merge:
+"stop:merge a":
 - base-branch: '^(?!develop$).*'
 
 feature:
