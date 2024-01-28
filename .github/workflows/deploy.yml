@@ -17,6 +17,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
           # ssh-actionの仕様上アッパーケースである必要がある
           envs: SOURCE_FILE,ENTRY_FILE
+          # TODO: makefileのコマンドをもちいることでビルドを行う
           script: |
             cd ${{ secrets.APP_CODE_PATH }}
             git pull origin main

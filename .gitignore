@@ -1,7 +1,7 @@
-elm-stuff/
-node_modules/
-screenshot/
-diff/
-report.html
-reg.json
-main.js
+app-web/elm-stuff/
+app-web/node_modules/
+app-web/screenshot/
+app-web/diff/
+app-web/report.html
+app-web/reg.json
+app-web/main.js

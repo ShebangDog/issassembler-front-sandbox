@@ -5,6 +5,11 @@ on:
       - "main"
       - "develop"
       - "**/main"
+defaults:
+  run:
+    working-directory:
+      ./web-app
+
 jobs:
   unit-test:
     runs-on: ubuntu-latest
