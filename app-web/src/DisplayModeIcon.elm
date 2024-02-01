@@ -16,17 +16,16 @@ view : Color.DisplayMode -> Html.Styled.Html msg
 view displayMode =
     let
         path =
-            "../"
-                ++ (case displayMode of
-                        Color.Default ->
-                            "../assets/earth.png"
+            (case displayMode of
+                Color.Default ->
+                    "/assets/earth.png"
 
-                        Color.Light ->
-                            "../assets/sun.png"
+                Color.Light ->
+                    "/assets/sun.png"
 
-                        Color.Dark ->
-                            "../assets/moon.png"
-                   )
+                Color.Dark ->
+                    "/assets/moon.png"
+            )
 
         icon =
             img
