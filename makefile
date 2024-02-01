@@ -6,6 +6,11 @@ build:
 run:
 	docker container run -it --name issassembler-app -p 8080:80 issassembler-app
 
+.PHONY: deploy
+deploy:
+	docker container run --name issassembler-app -p 8080:80 issassembler-app
+
+
 .PHONY: clean
 clean:
 	docker container rm -f issassembler-app
