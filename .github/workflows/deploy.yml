@@ -20,4 +20,4 @@ jobs:
             git pull origin main
             make clean
             make build
-            make run
+            make deploy
