@@ -15,7 +15,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USER_NAME }}
           key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
-          # TODO: makefileのコマンドをもちいることでビルドを行う
           script: |
             cd ${{ secrets.APP_CODE_PATH }}
             git pull origin main
