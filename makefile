@@ -8,7 +8,7 @@ run:
 
 .PHONY: deploy
 deploy:
-	docker container run --name issassembler-app -p 8080:80 issassembler-app
+	docker container run -d --name issassembler-app -p 8080:80 issassembler-app
 
 
 .PHONY: clean
