@@ -21,11 +21,13 @@
     "update-expected": "reg-cli ./screenshot ./expected ./diff -U",
     "compare": "reg-cli ./screenshot ./expected ./diff -R ./report.html",
     "dev": "elm reactor",
-    "type-check:file": "elm make ${npm_config_file} --output=/dev/null",
-    "type-check": "find src -type f | xargs -IVAL elm make VAL --output=/dev/null",
     "fix": "run-s fix:*",
     "fix:package": "fixpack",
+    "type-check": "find src -type f | xargs -IVAL elm make VAL --output=/dev/null",
+    "type-check::file": "elm make ${npm_config_file} --output=/dev/null",
+    "type-check:diff::branch": "npm run emit-diff::branch --branch=$npm_config_branch | tr ' ' '\n' | cut -d'/' -f2- | awk '/.*.elm$/' | xargs npm run type-check::file",
     "test": "npx elm-test-rs \"src/**/*.elm\"",
-    "postinstall": "npx elm-tooling install"
+    "postinstall": "npx elm-tooling install",
+    "emit-diff::branch": "git diff --name-only HEAD $npm_config_branch | xargs echo"
   }
 }
