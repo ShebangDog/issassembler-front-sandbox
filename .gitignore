@@ -11,3 +11,5 @@ backend/.metals/
 backend/project/target/
 backend/project/project/
 backend/target
+
+.metals/
