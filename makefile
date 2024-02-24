@@ -26,3 +26,11 @@ run-app-web:
 .PHONY: clean-app-web
 clean-app-web:
 	docker container rm -f issassembler-app-web
+
+.PHONY: up-development
+up-development:
+	docker compose -f compose/common/compose.yaml -f compose/development/compose.override.yaml up
+
+.PHONY:down-development
+down-development:
+	docker compose -f compose/common/compose.yaml -f compose/development/compose.override.yaml down
