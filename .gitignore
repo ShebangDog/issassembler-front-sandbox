@@ -10,6 +10,7 @@ backend/.bloop/
 backend/.metals/
 backend/project/target/
 backend/project/project/
+backend/project/.bloop/
 backend/target
 
 .metals/
