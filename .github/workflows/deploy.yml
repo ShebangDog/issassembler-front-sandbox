@@ -18,4 +18,4 @@ jobs:
           script: |
             cd ${{ secrets.APP_CODE_PATH }}
             git pull origin main
-            make up-production-f
+            make deploy
