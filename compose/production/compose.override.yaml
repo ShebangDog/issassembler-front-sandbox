@@ -1,8 +1,10 @@
 services:
-  backend: {}
+  backend:
+    ports:
+    - "8080:49922"
   nginx:
     build:
       context: ../../
       dockerfile: ./infra/Dockerfile
     ports:
-      - 80:80    
+      - 80:80
