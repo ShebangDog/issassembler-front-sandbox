@@ -17,6 +17,7 @@ import Page
 import Route exposing (Route)
 import Url
 import Url.Parser exposing (Parser)
+import Http
 
 
 type Msg
@@ -25,7 +26,11 @@ type Msg
     | ModeChanged Color.DisplayMode
     | ToggleChanged OpenState
     | Receive ( Json.Encode.Value, Json.Encode.Value )
+    | GotJson ( Result Http.Error Joke )
 
+type alias Joke =
+    { joke : String
+    }
 
 type Status
     = Success
@@ -44,6 +49,7 @@ type alias Model =
     , data : Data
     , mode : Color.DisplayMode
     , openState : OpenState
+    , joke : String
     }
 
 
@@ -87,6 +93,12 @@ decodeFlags =
         (Json.Decode.field "count" decodeData)
         (Json.Decode.field "displayMode" decodeDisplayMode)
 
+
+decodeJoke : Json.Decode.Decoder Joke
+decodeJoke =
+    Json.Decode.map Joke
+        ( Json.Decode.field "joke" Json.Decode.string
+        )
 
 decodeDisplayMode : Json.Decode.Decoder Color.DisplayMode
 decodeDisplayMode =
@@ -136,7 +148,11 @@ init flags url key =
         (Result.withDefault (Data 10) dataResult)
         (Result.withDefault Color.Default colorResult)
         OpenState.Close
-    , Cmd.none
+        "joke"
+    , Http.get
+        { url = "http://localhost:8080/joke"
+        , expect = Http.expectJson GotJson decodeJoke
+        }
     )
 
 
@@ -210,6 +226,16 @@ update msg model =
 
                         OpenState.Close ->
                             OpenState.Open
+              }
+            , Cmd.none
+            )
+        GotJson (jokeResponse) -> 
+            ( { model
+                | joke = case jokeResponse of
+                            Result.Ok value ->
+                                value.joke
+                            Result.Err _ ->
+                                model.joke
               }
             , Cmd.none
             )

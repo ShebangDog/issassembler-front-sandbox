@@ -1,0 +1,13 @@
+services:
+  app-web:
+    build: ../../app-web/
+    ports:
+      - "8000:49518"
+    volumes:
+      - ../../app-web/:/app-web:rw
+  backend:
+    ports:
+      - "8080:49922"
+    volumes:
+      - ../../backend/:/backend:rw
+      

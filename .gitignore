@@ -5,3 +5,12 @@ app-web/diff/
 app-web/report.html
 app-web/reg.json
 app-web/main.js
+
+backend/.bloop/
+backend/.metals/
+backend/project/target/
+backend/project/project/
+backend/project/.bloop/
+backend/target
+
+.metals/

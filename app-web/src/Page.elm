@@ -17,6 +17,7 @@ type alias Model a =
     { a
         | route : Route
         , data : Data
+        , joke : String
     }
 
 
@@ -30,13 +31,14 @@ type alias Action msg =
     }
 
 
-top : { a | data : Data } -> Action msg -> Html.Styled.Html msg
+top : { a | data : Data, joke : String } -> Action msg -> Html.Styled.Html msg
 top model action =
     div
         []
         (List.concat
             [ [ text "main"
               , text (String.fromInt model.data.count)
+              , text (model.joke)
               ]
             , Color.displayModeSet
                 |> List.map
@@ -105,6 +107,7 @@ init : PreviewModel
 init =
     { data = { count = 1 }
     , route = Route.top
+    , joke = "bad morning"
     }
 
 

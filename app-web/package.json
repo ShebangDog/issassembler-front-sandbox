@@ -20,7 +20,7 @@
     "capture-expected:main": "find src -type f | xargs -IVAL node script/screenshot.js expected VAL",
     "update-expected": "reg-cli ./screenshot ./expected ./diff -U",
     "compare": "reg-cli ./screenshot ./expected ./diff -R ./report.html",
-    "dev": "elm reactor",
+    "dev": "elm reactor --port=49518",
     "type-check:file": "elm make ${npm_config_file} --output=/dev/null",
     "type-check": "find src -type f | xargs -IVAL elm make VAL --output=/dev/null",
     "fix": "run-s fix:*",

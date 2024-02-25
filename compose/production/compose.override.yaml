@@ -1,0 +1,8 @@
+services:
+  backend: {}
+  nginx:
+    build:
+      context: ../../
+      dockerfile: ./infra/Dockerfile
+    ports:
+      - 80:80    
