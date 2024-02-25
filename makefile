@@ -14,9 +14,9 @@ down-development-v:
 up-production:
 	docker compose -f compose/common/compose.yaml -f compose/production/compose.override.yaml up
 
-.PHONY: up-production-f
-up-production-f:
-	docker compose -f compose/common/compose.yaml -f compose/production/compose.override.yaml up --build --force-recreate
+.PHONY: deploy
+deploy:
+	docker compose -f compose/common/compose.yaml -f compose/production/compose.override.yaml up --build --force-recreate -d
 
 .PHONY:down-production
 down-production:
