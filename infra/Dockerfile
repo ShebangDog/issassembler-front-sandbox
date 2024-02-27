@@ -24,4 +24,8 @@ COPY --chmod=755 --from=build-app-web /dist/main.js /var/www/js/main.js
 COPY --chmod=755 ./app-web/index.html /var/www/html/index.html
 COPY --chmod=755 ./app-web/assets /var/www/assets
 
+RUN mkdir /etc/nginx/logs
+RUN touch /etc/nginx/logs/app-web.log
+RUN touch /etc/nginx/logs/backend.log
+
 # ビルド後のファイルを公開する
