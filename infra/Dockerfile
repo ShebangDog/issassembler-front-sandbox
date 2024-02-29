@@ -28,4 +28,5 @@ RUN mkdir /etc/nginx/logs
 RUN touch /etc/nginx/logs/app-web.log
 RUN touch /etc/nginx/logs/backend.log
 
-# ビルド後のファイルを公開する
+
+EXPOSE 49518

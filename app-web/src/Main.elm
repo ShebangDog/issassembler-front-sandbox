@@ -150,7 +150,7 @@ init flags url key =
         OpenState.Close
         "joke"
     , Http.get
-        { url = "http://localhost:8080/joke"
+        { url = "/api/joke"
         , expect = Http.expectJson GotJson decodeJoke
         }
     )
