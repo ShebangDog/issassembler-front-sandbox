@@ -148,7 +148,7 @@ init flags url key =
         (Result.withDefault (Data 10) dataResult)
         (Result.withDefault Color.Default colorResult)
         OpenState.Close
-        "joke"
+        "default_joke"
     , Http.get
         { url = "/api/joke"
         , expect = Http.expectJson GotJson decodeJoke
