@@ -2,4 +2,5 @@ services:
   backend:
     build: 
       context: ../../../backend/
-      build: ../../../docker/backend/dockerfile/Dockerfile.development
+      dockerfile: ../../../docker/backend/dockerfile/Dockerfile.development
+      
