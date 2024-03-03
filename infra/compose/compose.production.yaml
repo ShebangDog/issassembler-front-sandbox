@@ -1,8 +1,8 @@
 services:
   reverse-proxy:
-    build: 
-      context: ../../
-      dockerfile: ./reverse-proxy/Dockerfile
+    build:
+      context: ../../../reverse-proxy/
+      dockerfile: ../../../reverse-proxy/dockerfile/Dockerfile.production
     ports:
       - "8000:80"
     networks:
@@ -12,10 +12,10 @@ services:
       - "49922"
     networks:
       - internal_network
-  app-web-nginx:
+  app-web:
     build:
-      context: ../../
-      dockerfile: ./infra/Dockerfile
+      context: ../../../app-web/
+      dockerfile: ../../../docker/app-web/dockerfile/Dockerfile.production
     ports:
       - "49518"
     networks:

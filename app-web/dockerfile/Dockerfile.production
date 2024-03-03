@@ -16,7 +16,7 @@ RUN elm make src/Main.elm --output=/dist/main.js
 FROM nginx:stable-alpine3.17-slim
 
 # nginxのコンフィグファイルの適用をする
-COPY ./infra/nginx.conf /etc/nginx/nginx.conf
+COPY ./app-web/nginx.conf /etc/nginx/nginx.conf
 
 # ビルド後のアプリケーションを配置する
 COPY --chmod=755 --from=build-app-web /dist/main.js /var/www/js/main.js
