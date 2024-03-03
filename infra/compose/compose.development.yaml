@@ -1,15 +1,13 @@
 services:
   app-web-dev:
     build: 
-      context: ../../../app-web/
-      dockerfile: ../../../app-web/dockerfile/Dockerfile.development
+      context: ../../app-web/
+      dockerfile: ../../app-web/dockerfile/Dockerfile.development
     ports:
       - "8000:49518"
-    volumes:
-      - ../../../app-web/:/app-web:rw
+    volumes: ../../app-web/:/app-web:rw
   backend:
     ports:
       - "8080:49922"
-    volumes:
-      - ../../../backend/:/backend:rw
+    volumes: ../../backend/:/backend:rw
       
