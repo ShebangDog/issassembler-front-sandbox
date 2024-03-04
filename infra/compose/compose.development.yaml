@@ -1,13 +1,20 @@
 services:
-  app-web-dev:
-    build: 
-      context: ../../app-web/
-      dockerfile: ../../app-web/dockerfile/Dockerfile.development
+  reverse-proxy:
+    build:
+      context: ../../reverse-proxy/
+      dockerfile: ./dockerfile/Dockerfile.development
     ports:
-      - "8000:49518"
-    volumes: ../../app-web/:/app-web:rw
+      - "8000:80"
+  app-web:
+    build:
+      context: ../../app-web/
+      dockerfile: ./dockerfile/Dockerfile.development
+    ports:
+      - "49518"
+    volumes:
+      - ../../app-web/:/app-web:rw
   backend:
     ports:
-      - "8080:49922"
-    volumes: ../../backend/:/backend:rw
-      
+      - "49922"
+    volumes:
+      - ../../backend/:/backend:rw

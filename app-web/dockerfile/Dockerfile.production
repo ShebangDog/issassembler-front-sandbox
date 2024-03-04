@@ -1,7 +1,7 @@
 FROM alpine:3.19.1 AS build-app-web
 
 WORKDIR /app
-COPY ./app-web /app
+COPY ./ /app
 
 # install elm
 RUN apk add curl
@@ -16,13 +16,13 @@ RUN elm make src/Main.elm --output=/dist/main.js
 FROM nginx:stable-alpine3.17-slim
 
 # nginxのコンフィグファイルの適用をする
-COPY ./app-web/nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx.conf /etc/nginx/nginx.conf
 
 # ビルド後のアプリケーションを配置する
 COPY --chmod=755 --from=build-app-web /dist/main.js /var/www/js/main.js
 
-COPY --chmod=755 ./app-web/index.html /var/www/html/index.html
-COPY --chmod=755 ./app-web/assets /var/www/assets
+COPY --chmod=755 ./index.html /var/www/html/index.html
+COPY --chmod=755 ./assets /var/www/assets
 
 RUN mkdir /etc/nginx/logs
 RUN touch /etc/nginx/logs/app-web.log
