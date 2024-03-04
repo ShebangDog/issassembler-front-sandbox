@@ -4,22 +4,13 @@ services:
       context: ../../reverse-proxy/
       dockerfile: ./dockerfile/Dockerfile.production
     ports:
-      - "80:80"
-    networks:
-      - internal_network
+      - "80:80" 
   backend:
     ports:
       - "49922"
-    networks:
-      - internal_network
   app-web:
     build:
       context: ../../app-web/
       dockerfile: ./dockerfile/Dockerfile.production
     ports:
       - "49518"
-    networks:
-      - internal_network
-networks:
-  internal_network:
-    driver: bridge
