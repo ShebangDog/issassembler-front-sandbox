@@ -3,4 +3,4 @@ FROM nginx:stable-alpine3.17-slim
 WORKDIR /reverse-proxy
 
 # nginxのコンフィグファイルの適用をする
-COPY ./nginx/nginx.production.conf /etc/nginx/nginx.conf
+COPY ./nginx/nginx.development.conf /etc/nginx/nginx.conf
