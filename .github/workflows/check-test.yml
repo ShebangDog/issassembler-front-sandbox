@@ -63,7 +63,7 @@ jobs:
             ./reg.json
       - name: declare is_pass
         run: |
-          node ./.github/helper/isPassed.js ../reg.json |
+          node ../.github/helper/isPassed.js ../../app-web/reg.json |
           xargs -IVAL echo "is_pass=VAL" >> $GITHUB_OUTPUT
         id: check_is_pass
         continue-on-error: true
@@ -87,7 +87,7 @@ jobs:
       # FIXME: 実行側から見た相対パスを渡せるようにしたい。(./reg.jsonを渡して動作するようになればOK)
       # 現段階では'../reg.json'といったふうに、スクリプトとの相対値を渡さないと動作しない。
       - name: make format
-        run: node ./.github/helper/formatter.js ../reg.json >> results
+        run: node ../.github/helper/formatter.js ../../app-web/reg.json >> results
       - name: make message
         run: |
           cat << EOF >> results
