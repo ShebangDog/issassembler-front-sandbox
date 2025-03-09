@@ -1,0 +1,19 @@
+{
+    "name": "backend",
+    "dockerComposeFile": [
+      "../../infra/compose/compose.common.yaml",
+      "../../infra/compose/compose.development.yaml",
+    ],
+    "service": "backend",
+    "workspaceFolder": "/issassembler-front-sandbox/backend",
+    "shutdownAction": "none",
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          "vscjava.vscode-java-pack",
+          "scala-lang.scala",
+          "scalameta.metals"
+        ]
+      }
+    }
+}

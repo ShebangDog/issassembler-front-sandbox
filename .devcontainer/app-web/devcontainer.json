@@ -1,0 +1,17 @@
+{
+    "name": "app-web",
+    "dockerComposeFile": [
+      "../../infra/compose/compose.common.yaml",
+      "../../infra/compose/compose.development.yaml",
+    ],
+    "service": "app-web",
+    "workspaceFolder": "/issassembler-front-sandbox/app-web",
+    "shutdownAction": "none",
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          "elmTooling.elm-ls-vscode"
+        ]
+      }
+    }
+}
