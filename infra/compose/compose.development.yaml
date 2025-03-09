@@ -12,9 +12,9 @@ services:
     ports:
       - "49518"
     volumes:
-      - ../../app-web/:/app-web:rw
+      - ../../.:/issassembler-front-sandbox/:cached
   backend:
     ports:
       - "49922"
     volumes:
-      - ../../backend/:/backend:rw
+      - ../../.:/issassembler-front-sandbox/:cached
