@@ -51,10 +51,17 @@ jobs:
           npm run compare
           pkill elm
         continue-on-error: true
+      - name: make report
+        run: |
+          ls
+          ls ./expected/src
+          ls ./screenshot/src
+          ls ./diff
       - name: upload result as artifact
         uses: actions/upload-artifact@v4
         with:
           name: test-result
+          if-no-files-found: error
           path: |
             ./expected/src/**/*.png
             ./screenshot/src/**/*.png
