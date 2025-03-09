@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16.16.0
+          node-version: 21.6.1
       - run: npm install
       - run: npm run test
   check-is-passed:
@@ -25,9 +25,9 @@ jobs:
     outputs:
       is_passed: ${{ steps.check_is_pass.outputs.is_pass }}
     steps:
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16.16.0
+          node-version: 21.6.1
       - uses: actions/checkout@v3
         with: 
           ref: ${{ github.base_ref }}
