@@ -1,5 +1,8 @@
 {
     "yaml.schemas": {
         "https://json.schemastore.org/github-workflow.json": "file:///Users/yamadaayumu/ElmProjects/issassembler-sandbox/.github/workflows/deploy.yml"
+    },
+    "files.watcherExclude": {
+        "**/target": true
     }
 }
