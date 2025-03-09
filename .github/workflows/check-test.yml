@@ -33,6 +33,7 @@ jobs:
           ref: ${{ github.base_ref }}
       - name: capture-expected
         run: |
+          npx -y playwright@1.51.0 install --with-deps
           npm install
           npm run dev &
           npm run capture-expected
@@ -43,6 +44,7 @@ jobs:
           clean: false
       - name: compare images
         run: |
+          npx -y playwright@1.51.0 install --with-deps
           npm install
           npm run dev &
           npm run capture-actual
