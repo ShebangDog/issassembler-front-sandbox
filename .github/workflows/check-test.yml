@@ -83,7 +83,8 @@ jobs:
     # vrtが落ちた場合このjobを実行する
     steps:
       - uses: actions/checkout@v3
-        clean: false
+        with:
+          clean: false
       - name: Download a single artifact
         uses: actions/download-artifact@v4
         with:
