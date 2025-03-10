@@ -12,8 +12,8 @@ const playwright_width_env_name = "PLAYWRIGHT_WIDTH"
 const playwright_height_env_name = "PLAYWRIGHT_HEIGHT"
 
 const port = process.env[port_env_name]
-const width = process.env[playwright_width_env_name]
-const height = process.env[playwright_height_env_name]
+const width = Number(process.env[playwright_width_env_name])
+const height = Number(process.env[playwright_height_env_name])
 
 if (!port) {
     exit_with_env_error(port_env_name);
