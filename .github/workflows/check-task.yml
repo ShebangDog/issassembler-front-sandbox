@@ -102,6 +102,7 @@ jobs:
         run: |
           cd app-web
           npm install
+          npx -y playwright@1.51.0 install --with-deps
           npm run dev &
           npm run capture-actual
           npm run update-expected
