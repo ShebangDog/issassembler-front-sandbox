@@ -1,6 +1,6 @@
 const commentListPath = process.argv[2]
 
-const commentList = require(`../${commentListPath}`)
+const commentList = require(`../../${commentListPath}`)
 
 const Type = {
     BOT: "Bot"
