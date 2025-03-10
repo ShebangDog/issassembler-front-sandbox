@@ -98,10 +98,9 @@ jobs:
         with:
           node-version: 16.16.0
           # token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - name: change-directory
-        run: cd app-web
       - name: compare images
         run: |
+          cd app-web
           npm install
           npm run dev &
           npm run capture-actual
