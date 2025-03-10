@@ -87,7 +87,6 @@ jobs:
           clean: false
       - name: print
         run: ls
-      # TODO: ダウンロード先のパスについて調べる
       - name: Download a single artifact
         uses: actions/download-artifact@v4
         with:
@@ -103,7 +102,7 @@ jobs:
           @$GITHUB_ACTOR
           EOF
       # FIXME: 実行側から見た相対パスを渡せるようにしたい。(./reg.jsonを渡して動作するようになればOK)
-      # 現段階では'../../../app-web/reg.json'といったふうに、スクリプトとの相対値を渡さないと動作しない。
+      # 現段階では'../../../reg.json'といったふうに、スクリプトとの相対値を渡さないと動作しない。
       - name: make format
         run: node ../.github/helper/formatter.js ../../reg.json >> results
       - name: make message

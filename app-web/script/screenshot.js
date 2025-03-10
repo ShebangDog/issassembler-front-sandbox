@@ -1,16 +1,34 @@
 // lib
 const print = (value) => console.log(value);
 
-// read config
-const port_env_name = "APP_WEB_PORT"
-const port = process.env[port_env_name]
-
-if (!port) {
+const exit_with_env_error = (env_name) => {
     print(`Error: ${port_env_name} is not set`);
     process.exit(1);
 }
 
+// read config
+const port_env_name = "APP_WEB_PORT"
+const playwright_width_env_name = "PLAYWRIGHT_WIDTH"
+const playwright_height_env_name = "PLAYWRIGHT_HEIGHT"
+
+const port = process.env[port_env_name]
+const width = process.env[playwright_width_env_name]
+const height = process.env[playwright_height_env_name]
+
+if (!port) {
+    exit_with_env_error(port_env_name);
+}
+
+if (!width) {
+    exit_with_env_error(playwright_width_env_name);
+}
+
+if (!height) {
+    exit_with_env_error(playwright_height_env_name);
+}
+
 // procedure
+const viewport = { width, height };
 const [directory, ...pathList] = process.argv.slice(2);
 
 const { chromium } = require('playwright');
@@ -18,6 +36,8 @@ const { chromium } = require('playwright');
 (async ({directory: dir, port}) => {
     print("setting up");
     const browser = await chromium.launch({ headless: true });
+    await browser.newContext({ viewport })
+
     print("browser up");
 
     print("start capturing");
