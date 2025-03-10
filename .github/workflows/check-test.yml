@@ -85,6 +85,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           clean: false
+      - name: print
+        run: ls
       - name: Download a single artifact
         uses: actions/download-artifact@v4
         with:
@@ -98,7 +100,7 @@ jobs:
       # FIXME: 実行側から見た相対パスを渡せるようにしたい。(./reg.jsonを渡して動作するようになればOK)
       # 現段階では'../../../app-web/reg.json'といったふうに、スクリプトとの相対値を渡さないと動作しない。
       - name: make format
-        run: node ../.github/helper/formatter.js ../../../app-web/reg.json >> results
+        run: node ../.github/helper/formatter.js ../../app-web/reg.json >> results
       - name: make message
         run: |
           cat << EOF >> results
