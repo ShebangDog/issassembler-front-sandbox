@@ -36,7 +36,7 @@ const { chromium } = require('playwright');
 (async ({directory: dir, port}) => {
     print("setting up");
     const browser = await chromium.launch({ headless: true });
-    await browser.newContext({ viewport })
+    const context = await browser.newContext({ viewport });
 
     print("browser up");
 
@@ -52,7 +52,7 @@ const { chromium } = require('playwright');
         await Promise.all(batch.map(async (path) => {
             print(`capture ${path}`);
             
-            const page = await browser.newPage();
+            const page = await context.newPage();
             try {
                 await page.goto(`http://localhost:${port}/${path}`, {
                     waitUntil: 'networkidle', // ネットワークが安定するまで待機
