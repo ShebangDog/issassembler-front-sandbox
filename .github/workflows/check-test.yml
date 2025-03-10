@@ -52,11 +52,13 @@ jobs:
           pkill elm
         continue-on-error: true
       - name: make report
-        run: |
-          ls
-          ls ./expected/src
-          ls ./screenshot/src
-          ls ./diff
+        run: ls
+      - name: make report expected
+        run: ls ./expected/src
+      - name: make report screenshot
+        run: ls ./screenshot/src
+      - name: make report diff
+        run: ls ./diff
       - name: upload result as artifact
         uses: actions/upload-artifact@v4
         with:
