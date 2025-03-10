@@ -65,11 +65,11 @@ jobs:
           name: test-result
           if-no-files-found: error
           path: |
-            ./expected/src/**/*.png
-            ./screenshot/src/**/*.png
-            ./diff/**/*.png
-            ./report.html
-            ./reg.json
+            expected/src/**/*.png
+            screenshot/src/**/*.png
+            diff/**/*.png
+            report.html
+            reg.json
       - name: declare is_pass
         run: |
           node ../.github/helper/isPassed.js ../../app-web/reg.json |
