@@ -74,7 +74,7 @@ jobs:
       - name: Throws an error if a task is not completed or if a completed task is added as new.
         if: ${{ env.finished_task_count != 1 || env.unfinished_task_count != 1 || env.previous_task_count != 1 || env.current_task_count != 1 || env.newest_comment_id != env.comment_id }}
         run: exit 1
-update-expected-image:
+  update-expected-image:
     name: do update expected image
     needs: pr_commented
     runs-on: ubuntu-latest
