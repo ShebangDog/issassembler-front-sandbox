@@ -78,9 +78,6 @@ jobs:
     name: do update expected image
     needs: pr_commented
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./app-web
     steps:
       # GitHub CLI api
       # https://cli.github.com/manual/gh_api
@@ -101,6 +98,8 @@ jobs:
         with:
           node-version: 16.16.0
           # token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: change-directory
+        run: cd app-web
       - name: compare images
         run: |
           npm install
