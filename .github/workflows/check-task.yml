@@ -88,16 +88,13 @@ jobs:
           xargs -IVAL echo  "branch_name=VAL" >> $GITHUB_ENV
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - uses: actions/checkout@v3
         with:
           ref: ${{ env.branch_name }}
           fetch-depth: 0
-          # token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - uses: actions/setup-node@v3
         with:
           node-version: 16.16.0
-          # token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: compare images
         run: |
           cd app-web
