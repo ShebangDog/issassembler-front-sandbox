@@ -36,7 +36,7 @@ top model action =
     div
         []
         (List.concat
-            [ [ text "main"
+            [ [ text "main-vrt"
               , text (String.fromInt model.data.count)
               , text (model.joke)
               ]
