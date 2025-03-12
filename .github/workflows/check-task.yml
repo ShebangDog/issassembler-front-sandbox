@@ -88,7 +88,7 @@ jobs:
           xargs -IVAL echo  "branch_name=VAL" >> $GITHUB_ENV
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ env.branch_name }}
       - uses: actions/setup-node@v4
