@@ -14,7 +14,7 @@ jobs:
   unit-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: "app-web/package.json"
@@ -25,7 +25,7 @@ jobs:
     outputs:
       is_passed: ${{ steps.check_is_pass.outputs.is_pass }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with: 
           ref: ${{ github.base_ref }}
       - uses: actions/setup-node@v4
@@ -39,7 +39,7 @@ jobs:
           npm run capture-expected
           pkill elm
         continue-on-error: true
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           clean: false
       - name: compare images
@@ -74,7 +74,7 @@ jobs:
     if: needs.check-is-passed.outputs.is_passed == 1
     # vrtが落ちた場合このjobを実行する
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           clean: false
       - name: print
