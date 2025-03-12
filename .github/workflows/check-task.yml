@@ -92,9 +92,9 @@ jobs:
         with:
           ref: ${{ env.branch_name }}
           fetch-depth: 0
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16.16.0
+          node-version-file: "./app-web/package.json"
       - name: compare images
         run: |
           cd app-web
